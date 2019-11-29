@@ -143,10 +143,10 @@ def makeShape(shapeName):
     elif shapeName == 'cube':
         newCurve = create_cube(shapeTitle)
     elif shapeName == 'arrow2d':
-        toast("2D Arrow. Incomplete.")
+        newCurve = create_2darrow(shapeTitle)
         return
     elif shapeName == 'arrow3d':
-        toast("3D Arrow. Incomplete")
+         newCurve = create_3darrow(shapeTitle)
         return
     elif shapeName == 'cog':
         toast("COG Control. Incomplete")
