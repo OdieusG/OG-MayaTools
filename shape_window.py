@@ -9,9 +9,9 @@ Description:
 
 How to run:
 
-import shape_window
-reload(shape_window)
-shape_window.gui()
+import MayaTools as mt
+reload(mt)
+mt.shape_window.gui()
 
 '''
 
