@@ -1,5 +1,3 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 '''
 shape_window.py
@@ -46,6 +44,7 @@ def validateShape(shapeName):
         return shapeName
     else:
         return ""
+
 
 def currentlySelectedItemCoords():
     selectedItems = pm.ls(sl=True)
@@ -146,7 +145,7 @@ def makeShape(shapeName):
         newCurve = create_2darrow(shapeTitle)
         return
     elif shapeName == 'arrow3d':
-         newCurve = create_3darrow(shapeTitle)
+        newCurve = create_3darrow(shapeTitle)
         return
     elif shapeName == 'cog':
         toast("COG Control. Incomplete")
