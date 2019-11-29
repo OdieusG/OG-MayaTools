@@ -7,9 +7,10 @@ Description:
 
 How to run:
 
-import MayaTools as mt
-reload(mt)
-mt.shape_window.gui()
+import MayaTools.shape_window as sw
+reload(sw)
+sw.gui()
+
 
 '''
 
