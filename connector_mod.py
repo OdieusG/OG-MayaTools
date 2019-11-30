@@ -15,4 +15,11 @@ Components:
 import pymel.core as pm
 
 def gui():
-	print "GUI"
+	windowWidth = 300
+	windowHeight=300
+	buttonWidth = 150
+	connector_window = pm.window(title="Connector Window", width=windowWidth, height=windowHeight)
+	pm.columnLayout()
+	pm.button(label="Pad this")
+
+	pm.showWindow(connector_window)
