@@ -206,9 +206,6 @@ def makeShape(shapeName):
         posY = 0
         posZ = 0
     else:
-
-        # Locate what is selected and get its coordinates
-
         updatedCoords = currentlySelectedItemCoords()
         posX = float(updatedCoords[0])
         posY = float(updatedCoords[1])
@@ -217,9 +214,6 @@ def makeShape(shapeName):
         shapeTitle = shapeName
     else:
         shapeTitle = curveName.getText()
-
-    # Valiidate the shape
-
     shapeTitle = str(validateShape(shapeTitle))
     if len(shapeTitle) == 0:
         toast('Circle could not be created at this time. Check the name and try again.'
@@ -269,7 +263,6 @@ def gui():
     pm.columnLayout()
     button_width = 100
     pm.rowColumnLayout(nc=4)
-
     pm.button(label='Create Circle', width=button_width,
               command=pm.Callback(makeShape, 'circle'))
     pm.button(label='Create Square', width=button_width,
