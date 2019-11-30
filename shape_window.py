@@ -120,6 +120,17 @@ def create_cube(shapeTitle):
         k=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], d=1)
 
 
+def create_COG(shapeTitle):
+        return pm.curve(name=shapeTitle, p=[(-1.19209e-07, 0, 2), (-0.382683,
+            0, 0.923879), (-1.414213, 0, 1.414213), (-0.923879, 0, 0.382683),
+        (-2, 0, 0), (-0.923879, 0, -0.382683), (-1.414213, 0, -1.414214),
+        (-0.382683, 0, -0.923879), (0, 0, -2), (0.382683, 0, -0.923879),
+        (1.414214, 0, -1.414213), (0.92388, 0, -0.382683), (2, 0,
+            -1.19209e-07), (0.92388, 0, 0.382683), (1.414214, 0, 1.414213),
+        (0.382683, 0, 0.923879), (-1.19209e-07, 0, 2)], k=[0, 0, 0, 1, 2, 3,
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 14], d=3)
+
+
 def create_compass(shapeTitle): 
     newShape = pm.curve(name="Microedge1", p=[(-0.309017, 0, -0.951057),
         (-0.455125, 0, -0.882908), (-0.587785, 0, -0.809017), (-0.710365, 0,
@@ -232,8 +243,7 @@ def makeShape(shapeName):
     elif shapeName == 'arrow3d':
         newCurve = create_3darrow(shapeTitle)
     elif shapeName == 'cog':
-        toast("COG Control. Incomplete")
-        return
+        newCurve = create_COG(shapeTitle)
     elif shapeName == 'compass':
         newCurve = create_compass(shapeTitle)
     else:
