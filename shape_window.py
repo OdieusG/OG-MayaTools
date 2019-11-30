@@ -105,6 +105,65 @@ def create_cube(shapeTitle):
     return pm.curve(name=shapeTitle, p=[(0.5, 0.5, -0.5), (0.5, 0.5, 0.5), (0.5, -0.5, 0.5), (0.5, -0.5, -0.5), (0.5, 0.5, -0.5), (-0.5, 0.5, -0.5), (-0.5, -0.5, -0.5), (0.5, -0.5, -0.5), (0.5, -0.5, 0.5), (-0.5, -0.5, 0.5), (-0.5, -0.5, -0.5), (-0.5, 0.5, -0.5), (-0.5, 0.5, 0.5), (-0.5, -0.5, 0.5), (-0.5, 0.5, 0.5), (0.5, 0.5, 0.5)], k=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], d=1)
 
 
+def create_compass(shapeTitle): 
+    __green__ = 14
+    __red__ = 13
+    __blue__ = 6
+    newShape = pm.curve(name="Microedge1", p=[(-0.309017, 0, -0.951057), (-0.455125, 0, -0.882908), (-0.587785, 0, -0.809017), (-0.710365, 0, -0.710365), (-0.809017, 0, -0.587785), (-0.885102, 0, -0.457095), (-0.951057, 0, -0.309017)], k=[0, 0, 0, 1, 2, 3, 4, 4, 4], d=3)
+    sidepiece1 = newShape
+    sidepiece_shape1 = sidepiece1.getShape();
+    sidepiece_shape1.overrideEnabled.set(True)
+    #sidepiece_shape1.overrideColor.set(__green__)
+    newShape = pm.curve(name="Microedge2", p=[(0.309017, 0, -0.951057), (0.457095, 0, -0.885102), (0.587785, 0, -0.809017), (0.709632, 0, -0.70902), (0.809017, 0, -0.587785), (0.885102, 0, -0.457095), (0.951057, 0, -0.309017)], k=[0, 0, 0, 1, 2, 3, 4, 4, 4], d=3)
+    sidepiece2 = newShape
+    sidepiece_shape2 = newShape.getShape();
+    sidepiece_shape2.overrideEnabled.set(True)
+    #sidepiece_shape2.overrideColor.set(__green__)
+    newShape = pm.curve(name="Microedge3", p=[(0.951057, 0, 0.309017), (0.885102, 0, 0.457095), (0.809017, 0, 0.587785), (0.710365, 0, 0.710365), (0.587785, 0, 0.809017), (0.455125, 0, 0.882908), (0.309017, 0, 0.951057)], k=[0, 0, 0, 1, 2, 3, 4, 4, 4], d=3)
+    sidepiece3 = newShape
+    sidepiece_shape3 = newShape.getShape();
+    sidepiece_shape3.overrideEnabled.set(True)
+    #sidepiece_shape3.overrideColor.set(__green__)
+    newShape = pm.curve(name="Microedge4", p=[(-0.309017, 0, 0.951057), (-0.457095, 0, 0.885102), (-0.587785, 0, 0.809017), (-0.710365, 0, 0.710365), (-0.809017, 0, 0.587785), (-0.882908, 0, 0.455125), (-0.951057, 0, 0.309017)], k=[0, 0, 0, 1, 2, 3, 4, 4, 4], d=3)
+    sidepiece4 = newShape
+    sidepiece_shape4 = newShape.getShape();
+    sidepiece_shape4.overrideEnabled.set(True)
+    #sidepiece_shape4.overrideColor.set(__green__)
+    #Combine microedges
+    microedge = pm.parent(shape="relative")
+    backCompass = pm.curve(name="compassBack", p=[(0.309017, 0, 0.951057), (0.309017, 0, 1.296348), (0.548167, 0, 1.296348), (0, 0, 2), (-0.548167, 0, 1.296347), (-0.309017, 0, 1.296347), (-0.309017, 0, 0.951057)], k=[0, 1, 2, 3, 4, 5, 6], d=1)
+    leftCompass = pm.curve(name="compassLeft", p=[(0.309017, 0, 0.951057), (0.309017, 0, 1.296348), (0.548167, 0, 1.296348), (0, 0, 2), (-0.548167, 0, 1.296347), (-0.309017, 0, 1.296347), (-0.309017, 0, 0.951057)], k=[0, 1, 2, 3, 4, 5, 6], d=1)
+    forwardCompass = pm.curve(name="compassForward", p=[(0.309017, 0, 0.951057), (0.309017, 0, 1.296348), (0.548167, 0, 1.296348), (0, 0, 2), (-0.548167, 0, 1.296347), (-0.309017, 0, 1.296347), (-0.309017, 0, 0.951057)], k=[0, 1, 2, 3, 4, 5, 6], d=1)
+    rightCompass = pm.curve(name="compassRight", p=[(0.309017, 0, 0.951057), (0.309017, 0, 1.296348), (0.548167, 0, 1.296348), (0, 0, 2), (-0.548167, 0, 1.296347), (-0.309017, 0, 1.296347), (-0.309017, 0, 0.951057)], k=[0, 1, 2, 3, 4, 5, 6], d=1)
+    leftCompass.ry.set(90)
+    backCompass.ry.set(180)
+    rightCompass.ry.set(270)
+    forwardCompass_shape = forwardCompass.getShape()
+    backCompass_shape = backCompass.getShape()
+    leftCompass_shape = leftCompass.getShape()
+    rightCompass_shape = rightCompass.getShape()
+    forwardCompass_shape.overrideEnabled.set(True)
+    backCompass_shape.overrideEnabled.set(True)
+    leftCompass_shape.overrideEnabled.set(True)
+    rightCompass_shape.overrideEnabled.set(True)
+    forwardCompass_shape.overrideColor.set(__green__)
+    backCompass_shape.overrideColor.set(__green__)
+    leftCompass_shape.overrideColor.set(__blue__)
+    rightCompass_shape.overrideColor.set(__red__)
+    #Freeze transforms on all
+    pm.makeIdentity(sidepiece1, sidepiece2, sidepiece3, sidepiece4, n=0, s=1, r=1, t=1, apply=True, pn=1)
+    pm.makeIdentity(leftCompass, rightCompass, forwardCompass, backCompass, n=0, s=1, r=1, t=1, apply=True, pn=1)
+    newGroup = pm.group(name="microEdges", em=True)
+    pm.parent(sidepiece_shape1, sidepiece_shape2, sidepiece_shape3, sidepiece_shape4, newGroup, s=True, r=True)
+    pm.parent(forwardCompass_shape, backCompass_shape, leftCompass_shape, rightCompass_shape, newGroup, s=True, r=True)
+    pm.makeIdentity(newGroup, n=0, s=1, r=1, t=1, apply=True, pn=1)
+    pm.delete(sidepiece1, sidepiece2, sidepiece3, sidepiece4)
+    pm.delete(forwardCompass, backCompass, leftCompass, rightCompass)
+    shapeName = pm.rename(newGroup, shapeTitle)
+    return newGroup
+
+
+
 def makeShape(shapeName):
 
     global curveName, validName
@@ -152,7 +211,7 @@ def makeShape(shapeName):
         toast("COG Control. Incomplete")
         return
     elif shapeName == 'compass':
-        toast("Compass. Incomplete")
+        newCurve = create_compass(shapeTitle)
         return
     else:
         toast('Unknown shape.')
