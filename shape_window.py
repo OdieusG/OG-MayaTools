@@ -229,10 +229,8 @@ def makeShape(shapeName):
         shapeTitle = shapeTitle + suffixName.getText()
     if shapeName == 'circle':
         newCurve = create_circle(shapeTitle)[0]
-        toast('Circle created')
     elif shapeName == 'square':
         newCurve = create_square(shapeTitle)
-        toast('Square')
     elif shapeName == 'cube':
         newCurve = create_cube(shapeTitle)
     elif shapeName == 'arrow2d':
