@@ -235,16 +235,13 @@ def makeShape(shapeName):
         newCurve = create_cube(shapeTitle)
     elif shapeName == 'arrow2d':
         newCurve = create_2darrow(shapeTitle)
-        return
     elif shapeName == 'arrow3d':
         newCurve = create_3darrow(shapeTitle)
-        return
     elif shapeName == 'cog':
         toast("COG Control. Incomplete")
         return
     elif shapeName == 'compass':
         newCurve = create_compass(shapeTitle)
-        return
     else:
         toast('Unknown shape.')
         return
