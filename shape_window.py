@@ -7,7 +7,7 @@ Description:
 
 How to run:
 
-import MayaTools.shape_window as sw
+import OG_MayaTools.shape_window as sw
 reload(sw)
 sw.gui()
 
@@ -17,6 +17,9 @@ sw.gui()
 import pymel.core as pm
 import maya.cmds as cmds
 import string
+__green__ = 14
+__red__ = 13
+__blue__ = 6
 
 isNotPersistent = True
 sendToOrigin = True
@@ -118,9 +121,6 @@ def create_cube(shapeTitle):
 
 
 def create_compass(shapeTitle): 
-    __green__ = 14
-    __red__ = 13
-    __blue__ = 6
     newShape = pm.curve(name="Microedge1", p=[(-0.309017, 0, -0.951057),
         (-0.455125, 0, -0.882908), (-0.587785, 0, -0.809017), (-0.710365, 0,
             -0.710365), (-0.809017, 0, -0.587785), (-0.885102, 0, -0.457095),
@@ -128,7 +128,6 @@ def create_compass(shapeTitle):
     sidepiece1 = newShape
     sidepiece_shape1 = sidepiece1.getShape();
     sidepiece_shape1.overrideEnabled.set(True)
-    #sidepiece_shape1.overrideColor.set(__green__)
     newShape = pm.curve(name="Microedge2", p=[(0.309017, 0, -0.951057),
         (0.457095, 0, -0.885102), (0.587785, 0, -0.809017), (0.709632, 0,
             -0.70902), (0.809017, 0, -0.587785), (0.885102, 0, -0.457095),
@@ -136,7 +135,6 @@ def create_compass(shapeTitle):
     sidepiece2 = newShape
     sidepiece_shape2 = newShape.getShape();
     sidepiece_shape2.overrideEnabled.set(True)
-    #sidepiece_shape2.overrideColor.set(__green__)
     newShape = pm.curve(name="Microedge3", p=[(0.951057, 0, 0.309017),
         (0.885102, 0, 0.457095), (0.809017, 0, 0.587785), (0.710365, 0,
             0.710365), (0.587785, 0, 0.809017), (0.455125, 0, 0.882908),
@@ -144,7 +142,6 @@ def create_compass(shapeTitle):
     sidepiece3 = newShape
     sidepiece_shape3 = newShape.getShape();
     sidepiece_shape3.overrideEnabled.set(True)
-    #sidepiece_shape3.overrideColor.set(__green__)
     newShape = pm.curve(name="Microedge4", p=[(-0.309017, 0, 0.951057),
         (-0.457095, 0, 0.885102), (-0.587785, 0, 0.809017), (-0.710365, 0,
             0.710365), (-0.809017, 0, 0.587785), (-0.882908, 0, 0.455125),
@@ -152,8 +149,6 @@ def create_compass(shapeTitle):
     sidepiece4 = newShape
     sidepiece_shape4 = newShape.getShape();
     sidepiece_shape4.overrideEnabled.set(True)
-    #sidepiece_shape4.overrideColor.set(__green__)
-    #Combine microedges
     microedge = pm.parent(shape="relative")
     backCompass = pm.curve(name="compassBack", p=[(0.309017, 0, 0.951057),
         (0.309017, 0, 1.296348), (0.548167, 0, 1.296348), (0, 0, 2),
@@ -186,7 +181,6 @@ def create_compass(shapeTitle):
     backCompass_shape.overrideColor.set(__green__)
     leftCompass_shape.overrideColor.set(__blue__)
     rightCompass_shape.overrideColor.set(__red__)
-    #Freeze transforms on all
     pm.makeIdentity(sidepiece1, sidepiece2, sidepiece3, sidepiece4, n=0, s=1,
         r=1, t=1, apply=True, pn=1)
     pm.makeIdentity(leftCompass, rightCompass, forwardCompass, backCompass,
