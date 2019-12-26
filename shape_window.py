@@ -13,10 +13,11 @@ sw.gui()
 
 
 '''
-
 import pymel.core as pm
 import maya.cmds as cmds
 import string
+
+import global_functions
 __green__ = 14
 __red__ = 13
 __blue__ = 6
