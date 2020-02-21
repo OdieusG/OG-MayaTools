@@ -23,19 +23,19 @@ padObject = ""
 def toast(message):
     cmds.headsUpMessage(message)
 
-def getSelected(dag=True):
-	if dag==True:
-		selectedItem=cmds.ls(sl=True, dag=True)
-	else:
-		selectedItem=cmds.ls(sl=True)
+def getSelected(dagOption=True, shorty=False):
+	selectedItem=cmds.ls(sl=True, dag=dagOption, shortNames=shorty)
+	toast(selectedItem)
 	return selectedItem
 
 def closeWindow():
 	pm.deleteUI(connector_window)
 
 def selectItem(*args):
+	# Break down the passed selected into
+	selItem = getSelected(False, True)
 	pm.text("padObject", label=str(getSelected(False)), edit=True)
-	toast("Locate safe name")
+	#toast("Locate safe name")
 
 def padObject(*args):
 	# Get the location of the object getting padded (xform)
