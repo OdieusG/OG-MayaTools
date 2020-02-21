@@ -15,10 +15,10 @@ Components:
 import pymel.core as pm
 
 def getPosition(joint):
-	print joint
+	print(joint)
 
-def padObject():
-	print "padding object"
+def padObject(*args):
+	print("padding object")
 
 def gui():
 	windowWidth = 300
@@ -26,6 +26,6 @@ def gui():
 	buttonWidth = 150
 	connector_window = pm.window(title="Connector Window", width=windowWidth, height=windowHeight)
 	pm.columnLayout()
-	pm.button(label="Pad this", width=buttonWidth)
+	pm.button(label="Pad this", width=buttonWidth,command=pm.Callback("padObject"))
 
 	pm.showWindow(connector_window)
