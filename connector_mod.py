@@ -14,6 +14,7 @@ Components:
 
 import pymel.core as pm
 import maya.cmds as cmds
+import sys
 
 windowWidth = 500
 windowHeight=300
@@ -23,26 +24,27 @@ padObject = ""
 def toast(message):
     cmds.headsUpMessage(message)
 
-def getSelected(dagOption=True, shorty=False):
-	selectedItem=cmds.ls(sl=True, dag=dagOption, shortNames=shorty)
-	toast(selectedItem)
-	return selectedItem
+def getSelected(dagOption=True, niceName=False):
+	selectedItem = cmds.ls(sl=True, dag=dagOption)
+	if niceName == True:
+		return selectedItem[0]
+	else:
+		return selectedItem
 
 def closeWindow():
+	global connector_window
 	pm.deleteUI(connector_window)
 
 def selectItem(*args):
 	# Break down the passed selected into
-	selItem = getSelected(False, True)
-	pm.text("padObject", label=str(getSelected(False)), edit=True)
-	#toast("Locate safe name")
+	#selItem = getSelected(False, True)
+	pm.text("padObject", label=str(getSelected(True, True)), edit=True)
 
 def padObject(*args):
 	# Get the location of the object getting padded (xform)
 	initialObject  = getSelected()
 	initialTranslate = cmds.xform(initialObject[0], q=True, t=True)
 	initialRotate = cmds.xform(initialObject[0], q=True, ro=True)
-	print("Translate: " + str(initialTranslate) + "\nRotate: " + str(initialRotate))
 	# Create group
 	pm.group(em=True, n="newGroup")
 	# Move group to location of object
@@ -52,6 +54,7 @@ def padObject(*args):
 	closeWindow()
 
 def gui():
+	global connector_window
 	connector_window = pm.window(title="Connector Window", width=windowWidth, height=windowHeight, sizeable=False)
 	pm.scrollLayout()
 	pm.frameLayout(collapsable=True, label="Pad Object", width=(windowWidth-10))
