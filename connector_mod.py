@@ -14,6 +14,12 @@ Components:
 
 import pymel.core as pm
 
+def getPosition(joint):
+	print joint
+
+def padObject():
+	print "padding object"
+
 def gui():
 	windowWidth = 300
 	windowHeight=300
