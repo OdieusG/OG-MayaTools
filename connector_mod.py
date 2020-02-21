@@ -20,6 +20,9 @@ windowHeight=300
 buttonWidth = 150
 padObject = ""
 
+def toast(message):
+    cmds.headsUpMessage(message)
+
 def getSelected(dag=True):
 	if dag==True:
 		selectedItem=cmds.ls(sl=True, dag=True)
@@ -31,7 +34,8 @@ def closeWindow():
 	pm.deleteUI(connector_window)
 
 def selectItem(*args):
-	padObject.setValue("test")
+	pm.text("padObject", label=str(getSelected(False)), edit=True)
+	toast("Locate safe name")
 
 def padObject(*args):
 	# Get the location of the object getting padded (xform)
@@ -53,8 +57,8 @@ def gui():
 	pm.frameLayout(collapsable=True, label="Pad Object", width=(windowWidth-10))
 	pm.rowLayout(numberOfColumns=3, columnWidth=[(1, 150), (2, 200), (3, 150)], columnAlign=[(3, 'right')])
 	pm.text(label="Choose an object to pad:")
-	padObject = pm.text(label="<i>nothing selected</i>")
-	pm.button(label="Choose item", command=pm.Callback(selectItem(padObject)))
+	pm.text("padObject", label="<i>nothing selected</i>")
+	pm.button(label="Choose item", command=pm.Callback(selectItem))
 	pm.setParent("..")
 	pm.columnLayout()
 	pm.button(label="Pad this", command=pm.Callback(padObject))
