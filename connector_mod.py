@@ -15,6 +15,11 @@ Components:
 import pymel.core as pm
 import maya.cmds as cmds
 
+windowWidth = 500
+windowHeight=300
+buttonWidth = 150
+padObject = ""
+
 def getSelected(dag=True):
 	if dag==True:
 		selectedItem=cmds.ls(sl=True, dag=True)
@@ -24,6 +29,9 @@ def getSelected(dag=True):
 
 def closeWindow():
 	pm.deleteUI(connector_window)
+
+def selectItem(*args):
+	padObject.setValue("test")
 
 def padObject(*args):
 	# Get the location of the object getting padded (xform)
@@ -40,14 +48,16 @@ def padObject(*args):
 	closeWindow()
 
 def gui():
-	windowWidth = 300
-	windowHeight=300
-	buttonWidth = 150
-	connector_window = pm.window(title="Connector Window", width=windowWidth, height=windowHeight)
+	connector_window = pm.window(title="Connector Window", width=windowWidth, height=windowHeight, sizeable=False)
 	pm.scrollLayout()
-	pm.rowLayout(numberOfColumns=2)
-	pm.text(label="Choose an object:")
-	pm.button(label="Pad this", width=buttonWidth,command=pm.Callback(padObject))
+	pm.frameLayout(collapsable=True, label="Pad Object", width=(windowWidth-10))
+	pm.rowLayout(numberOfColumns=3, columnWidth=[(1, 150), (2, 200), (3, 150)], columnAlign=[(3, 'right')])
+	pm.text(label="Choose an object to pad:")
+	padObject = pm.text(label="<i>nothing selected</i>")
+	pm.button(label="Choose item", command=pm.Callback(selectItem(padObject)))
+	pm.setParent("..")
+	pm.columnLayout()
+	pm.button(label="Pad this", command=pm.Callback(padObject))
 	pm.setParent("..")
 	pm.checkBox("Automatically close window", value=True)
 
