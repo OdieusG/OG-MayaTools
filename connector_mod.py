@@ -57,6 +57,10 @@ def padObject(*args):
 	cmds.parent(initialObject[0], padName)
 	closeWindow()
 
+def curveInfo(*args):
+	cInfo = getSelected()
+	print(len(cInfo.cv))
+
 def gui():
 	global connector_window, appendPad
 	connector_window = pm.window(title="Connector Window", width=windowWidth, height=windowHeight, sizeable=False)
@@ -88,6 +92,7 @@ def gui():
 
 	pm.setParent("..")
 
+	pm.button(label="Curve Info", command=pm.Callback(curveInfo))
 
 	pm.checkBox("Automatically close window", value=True)
 
