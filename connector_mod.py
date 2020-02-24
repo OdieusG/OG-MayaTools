@@ -57,15 +57,18 @@ def padObject(*args):
 	cmds.parent(initialObject[0], padName)
 	closeWindow()
 
-def curveInfo(*args):
-	cInfo = getSelected()
-	print(len(cInfo.cv))
-
 def gui():
 	global connector_window, appendPad
-	connector_window = pm.window(title="Connector Window", width=windowWidth, height=windowHeight, sizeable=False)
-	pm.tabLayout(innerMarginWidth=5, innerMarginHeight=5)
-	child1 = pm.scrollLayout("Quick Snaps")
+	connector_window = pm.window(title="Connector Window", width=windowWidth, height=windowHeight, sizeable=True)
+	pm.columnLayout(numberOfChildren=2)
+	mainTabs = pm.tabLayout(innerMarginWidth=5, innerMarginHeight=5)
+
+	tab_1 = pm.columnLayout(numberOfChildren=2)
+	pm.text(label="<i>Things to work on</i>")
+	pm.text(label="Autosnapper\nJoint connector\nShape maker integration", align="left")
+	pm.setParent(mainTabs)
+
+	tab_2 = pm.scrollLayout(width=windowWidth-10, height=windowHeight-50)
 
 	pm.frameLayout(collapsable=True, label="Pad Object", width=(windowWidth-10))
 
@@ -84,15 +87,24 @@ def gui():
 	pm.text(width=150, label="")
 	pm.button(label="Pad this", command=pm.Callback(padObject))
 	pm.text(width=150, label="")
+
+	pm.setParent(mainTabs)
+	
+	tab_3 = pm.tabLayout(innerMarginWidth=5, innerMarginHeight=5)
+
+	#pm.frameLayout(collapsable=True, label="Shape Maker")
+	pm.rowLayout(numberOfColumns=2)
+	pm.optionMenu(label="Colors")
+	pm.menuItem(label="1")
+	pm.menuItem(label="2")
+	pm.setParent("..")
+	pm.setParent(mainTabs)
+	
+
 	pm.setParent("..")
 
-	pm.scrollLayout("Other Stuff")
-	pm.text("test")
-	pm.setParent("..")
-
-	pm.setParent("..")
-
-	pm.button(label="Curve Info", command=pm.Callback(curveInfo))
+	mainTabs.setTabLabel([tab_1, "TODO"])
+	mainTabs.setTabLabel([tab_2, "Snapper"])
 
 	pm.checkBox("Automatically close window", value=True)
 
