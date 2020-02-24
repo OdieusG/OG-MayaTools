@@ -87,17 +87,12 @@ def gui():
 	pm.text(width=150, label="")
 	pm.button(label="Pad this", command=pm.Callback(padObject))
 	pm.text(width=150, label="")
+	pm.setParent("..")
 
 	pm.setParent(mainTabs)
 	
-	tab_3 = pm.tabLayout(innerMarginWidth=5, innerMarginHeight=5)
-
-	#pm.frameLayout(collapsable=True, label="Shape Maker")
-	pm.rowLayout(numberOfColumns=2)
-	pm.optionMenu(label="Colors")
-	pm.menuItem(label="1")
-	pm.menuItem(label="2")
-	pm.setParent("..")
+	tab_3 = pm.frameLayout(collapsable=True, label="Shape Maker", width=windowWidth-40)
+	pm.text(label="testing")
 	pm.setParent(mainTabs)
 	
 
@@ -105,6 +100,14 @@ def gui():
 
 	mainTabs.setTabLabel([tab_1, "TODO"])
 	mainTabs.setTabLabel([tab_2, "Snapper"])
+	mainTabs.setTabLabel([tab_3, "Shape Maker"])
+
+	pm.rowLayout(numberOfColumns=2)
+	pm.text(label="Test - ")
+	pm.optionMenu(label="Colors")
+	pm.menuItem(label="1")
+	pm.menuItem(label="2")
+	pm.setParent("..")
 
 	pm.checkBox("Automatically close window", value=True)
 
