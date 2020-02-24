@@ -89,12 +89,12 @@ def gui():
 	pm.text(width=150, label="")
 	pm.setParent("..")
 
+	pm.frameLayout
 	pm.setParent(mainTabs)
 	
 	tab_3 = pm.frameLayout(collapsable=True, label="Shape Maker", width=windowWidth-40)
 	pm.text(label="testing")
 	pm.setParent(mainTabs)
-	
 
 	pm.setParent("..")
 
