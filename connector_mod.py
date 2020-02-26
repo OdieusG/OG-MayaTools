@@ -237,10 +237,13 @@ def createShape(*args):
 
 def autocloseWindowToggle(*args):
 	windowKeepAlive = keepAliveCheck.getValue()
+	toast("Keep alive toggled")
 
+def fkikSelectEnd(*args):
+	endJoint.setText(getSelected(True))
 
 def gui():
-	global connector_window, appendPad, rootJoint, windowKeepAlive, keepAliveCheck
+	global connector_window, appendPad, rootJoint, windowKeepAlive, keepAliveCheck, endJoint
 	connector_window = pm.window(title="Connector Window", width=windowWidth, height=windowHeight, sizeable=True)
 	pm.columnLayout(numberOfChildren=2, columnAlign="left")
 	mainTabs = pm.tabLayout(innerMarginWidth=5, innerMarginHeight=5)
@@ -248,7 +251,7 @@ def gui():
 	tab_1 = pm.columnLayout(numberOfChildren=2)
 	# Tab1 begin
 	pm.text(label="<i>Things to work on</i>")
-	pm.text(label="Autosnapper\nJoint connector\nShape maker integration", align="left")
+	pm.text(label="Autosnapper\nJoint connector\nShape maker integration\nJoint orient tool", align="left")
 	pm.setParent(mainTabs)
 	# Tab1 end
 
@@ -321,13 +324,29 @@ def gui():
 	tab_4 = pm.columnLayout(numberOfChildren=1, columnAlign="left")
 	pm.rowLayout(numberOfColumns=3, width=450, columnWidth=([1, 150], [2, 200], [3, 150]))
 	pm.text(label="Select the root joint:")
-	rootJoint = pm.textField(placeholderText="none set", editable=False)
+	rootJoint = pm.textField(placeholderText="Choose joint", editable=False)
 	pm.button(label="Select root", command=pm.Callback(fkikSelectRoot))
+	pm.setParent("..")
+
+	pm.rowLayout(numberOfColumns=3, width=450, columnWidth=([1, 150],[2, 200],[3, 150]))
+	pm.text(label="Select the end joint\n(for IK creation)")
+	endJoint = pm.textField(placeholderText="Choose joint", editable=False)
+	pm.button(label="Select end joint", command=pm.Callback(fkikSelectEnd))
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350], [2, 150]))
 	pm.text(label="Create controls on respective joints?")
 	pm.checkBox("", value=True)
+	pm.setParent("..")
+
+	pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350],[2, 150]))
+	pm.text("Create controls in hierarchy?")
+	pm.checkBox(label="", value=True)
+	pm.setParent("..")
+
+	pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350], [2, 150]))
+	pm.text(label="Connect controls on respective joints?")
+	pm.checkBox(label="", value=True)
 	pm.setParent("..")
 
 	pm.setParent(mainTabs)
