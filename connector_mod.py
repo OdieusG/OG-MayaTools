@@ -46,14 +46,14 @@ def selectItem(*args):
 	pm.text("padObject", label=str(getSelected(True)), edit=True)
 
 def padObject(*args):
-	global appendPad
+	global chk_appendPad
 	# Get the location of the object getting padded (xform)
 	initialObject  = getSelected()
 	initialTranslate = cmds.xform(initialObject[0], q=True, t=True)
 	initialRotate = cmds.xform(initialObject[0], q=True, ro=True)
 	# Create group
 	padName = str(getSelected(True))
-	if appendPad.getValue() == True:
+	if chk_appendPad.getValue() == True:
 		padName = padName + "_pad"
 	pm.group(em=True, n=padName)
 	# Move group to location of object
@@ -80,87 +80,333 @@ def create_circle(shapeTitle):
 
 
 def create_square(shapeTitle):
-    return pm.curve(name=shapeTitle, p=[(0.5, 0, 0.5), (-0.5, 0, 0.5),
-                    (-0.5, 0, -0.5), (0.5, 0, -0.5), (0.5, 0, 0.5)],
-                    k=[0, 1, 2, 3, 4], d=1)
+    return pm.curve(name=shapeTitle, p=[
+    	(0.5, 0, 0.5), 
+    	(-0.5, 0, 0.5),
+    	(-0.5, 0, -0.5), 
+    	(0.5, 0, -0.5), 
+    	(0.5, 0, 0.5)],
+    	k=[0, 1, 2, 3, 4], d=1)
 
 
 def create_2darrow(shapeTitle):
-    return pm.curve(name=shapeTitle, p=[(0, 0, 1), (1, 0, 0), (0.5, 0, 0), (0.5, 0, -1), (-0.5, 0, -1), (-0.5, 0, 0), (-1, 0, 0), (0, 0, 1)], k=[0, 1, 2, 3, 4, 5, 6, 7], d=1)
+    return pm.curve(name=shapeTitle, p=[
+    	(0, 0, 1), 
+    	(1, 0, 0), 
+    	(0.5, 0, 0),
+    	(0.5, 0, -1), 
+    	(-0.5, 0, -1), 
+    	(-0.5, 0, 0), 
+    	(-1, 0, 0), 
+    	(0, 0, 1)],
+    	k=[0, 1, 2, 3, 4, 5, 6, 7], d=1)
 
 
 def create_3darrow(shapeTitle):
-    return pm.curve(name=shapeTitle, p=[(0, 0, 1), (1, 0, 0), (0.5, 0, 0),
-    	(0.5, 0, -1), (0, 0, -1), (0, 0.5, -1), (0, 0.5, 0), (0, 1, 0),
-    	(0, 0, 1), (-1, 0, 0), (-0.5, 0, 0), (-0.5, 0, -1), (0, 0, -1),
-    	(0, -0.5, -1), (0, -0.5, 0), (0, -1, 0), (0, 0, 1)],
+    return pm.curve(name=shapeTitle, p=[
+    	(0, 0, 1), 
+    	(1, 0, 0), 
+    	(0.5, 0, 0),
+    	(0.5, 0, -1), 
+    	(0, 0, -1), 
+    	(0, 0.5, -1), 
+    	(0, 0.5, 0), 
+    	(0, 1, 0),
+    	(0, 0, 1), 
+    	(-1, 0, 0), 
+    	(-0.5, 0, 0), 
+    	(-0.5, 0, -1), 
+    	(0, 0, -1),
+    	(0, -0.5, -1), 
+    	(0, -0.5, 0), 
+    	(0, -1, 0), 
+    	(0, 0, 1)
+    	],
     	k=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], d=1)
 
 
 def create_cube(shapeTitle):
-    return pm.curve(name=shapeTitle, p=[(0.5, 0.5, -0.5), (0.5, 0.5, 0.5),
-        (0.5, -0.5, 0.5), (0.5, -0.5, -0.5), (0.5, 0.5, -0.5), (-0.5, 0.5,
-            -0.5), (-0.5, -0.5, -0.5), (0.5, -0.5, -0.5), (0.5, -0.5, 0.5),
-        (-0.5, -0.5, 0.5), (-0.5, -0.5, -0.5), (-0.5, 0.5, -0.5), (-0.5, 0.5,
-            0.5), (-0.5, -0.5, 0.5), (-0.5, 0.5, 0.5), (0.5, 0.5, 0.5)],
+    return pm.curve(name=shapeTitle, p=[
+    	(0.5, 0.5, -0.5), 
+    	(0.5, 0.5, 0.5),
+        (0.5, -0.5, 0.5), 
+        (0.5, -0.5, -0.5), 
+        (0.5, 0.5, -0.5), 
+        (-0.5, 0.5,  -0.5), 
+        (-0.5, -0.5, -0.5), 
+        (0.5, -0.5, -0.5), 
+        (0.5, -0.5, 0.5),
+        (-0.5, -0.5, 0.5), 
+        (-0.5, -0.5, -0.5), 
+        (-0.5, 0.5, -0.5), 
+        (-0.5, 0.5, 0.5), 
+        (-0.5, -0.5, 0.5), 
+        (-0.5, 0.5, 0.5), 
+        (0.5, 0.5, 0.5)
+        ],
         k=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], d=1)
 
 
 def create_COG(shapeTitle):
-        return pm.curve(name=shapeTitle, p=[(-1.19209e-07, 0, 2), (-0.382683, 0, 0.923879), (-1.414213, 0, 1.414213), (-0.923879, 0, 0.382683), (-2, 0, 0), (-0.923879, 0, -0.382683), (-1.414213, 0, -1.414214), (-0.382683, 0, -0.923879), (0, 0, -2), (0.382683, 0, -0.923879), (1.414214, 0, -1.414213), (0.92388, 0, -0.382683), (2, 0, -1.19209e-07), (0.92388, 0, 0.382683), (1.414214, 0, 1.414213), (0.382683, 0, 0.923879), (-1.19209e-07, 0, 2)], k=[0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 14], d=3)
+        return pm.curve(name=shapeTitle, p=[
+        	(-1.19209e-07, 0, 2), 
+        	(-0.382683, 0, 0.923879), 
+        	(-1.414213, 0, 1.414213), 
+        	(-0.923879, 0, 0.382683), 
+        	(-2, 0, 0), 
+        	(-0.923879, 0, -0.382683), 
+        	(-1.414213, 0, -1.414214), 
+        	(-0.382683, 0, -0.923879), 
+        	(0, 0, -2), 
+        	(0.382683, 0, -0.923879),
+        	(1.414214, 0, -1.414213), 
+        	(0.92388, 0, -0.382683),
+        	(2, 0,-1.19209e-07), 
+        	(0.92388, 0, 0.382683),
+        	(1.414214, 0, 1.414213), 
+        	(0.382683, 0, 0.923879),
+        	(-1.19209e-07, 0, 2)
+        	],
+        	k=[
+        	0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 
+        	13, 14, 14, 14
+        	], d=3)
 
 def create_sphere(shapeTitle):
-        return pm.curve(name=shapeTitle, p=[(0, 1, 0), (0.25, 0.866025, 0.433013), (0.5, 0.866025, 0), (0.25, 0.866025, -0.433013), (-0.25, 0.866025, -0.433013), (-0.5, 0.866025, -7.45058e-08), (-0.25, 0.866025, 0.433013), (0.25, 0.866025, 0.433013), (0.433013, 0.5, 0.75), (-0.433013, 0.5, 0.75), (-0.866025, 0.5, -1.29048e-07), (-0.433013, 0.5, -0.75), (0.433013, 0.5, -0.75), (0.866025, 0.5, 0), (0.433013, 0.5, 0.75), (0.5, 0, 0.866025), (-0.5, 0, 0.866025), (-1, 0, -1.49012e-07), (-0.5, 0, -0.866026), (0.5, 0, -0.866025), (1, 0, 0), (0.5, 0, 0.866025), (0.433013, -0.5, 0.75), (-0.433013, -0.5, 0.75), (-0.866025, -0.5, -1.29048e-07), (-0.433013, -0.5, -0.75), (0.433013, -0.5, -0.75), (0.866025, -0.5, 0), (0.433013, -0.5, 0.75), (0.25, -0.866025, 0.433013), (-0.25, -0.866025, 0.433013), (-0.5, -0.866025, -7.45058e-08), (-0.25, -0.866025, -0.433013), (0.25, -0.866025, -0.433013), (0.5, -0.866025, 0), (0.25, -0.866025, 0.433013), (0, -1, 0), (-0.25, -0.866025, -0.433013), (-0.433013, -0.5, -0.75), (-0.5, 0, -0.866026), (-0.433013, 0.5, -0.75), (-0.25, 0.866025, -0.433013), (0, 1, 0), (-0.5, 0.866025, -7.45058e-08), (-0.866025, 0.5, -1.29048e-07), (-1, 0, -1.49012e-07), (-0.866025, -0.5, -1.29048e-07), (-0.5, -0.866025, -7.45058e-08), (0, -1, 0), (0.5, -0.866025, 0), (0.866025, -0.5, 0), (1, 0, 0), (0.866025, 0.5, 0), (0.5, 0.866025, 0), (0, 1, 0), (0.25, 0.866025, -0.433013), (0.433013, 0.5, -0.75), (0.5, 0, -0.866025), (0.433013, -0.5, -0.75), (0.25, -0.866025, -0.433013), (0, -1, 0), (-0.25, -0.866025, 0.433013), (-0.433013, -0.5, 0.75), (-0.5, 0, 0.866025), (-0.433013, 0.5, 0.75), (-0.25, 0.866025, 0.433013), (0, 1, 0)], k=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66], d=1)
+        return pm.curve(name=shapeTitle, p=[
+        	(0, 1, 0),
+        	(0.25, 0.866025, 0.433013),
+        	(0.5, 0.866025, 0),
+        	(0.25, 0.866025, -0.433013),
+        	(-0.25, 0.866025, -0.433013),
+        	(-0.5, 0.866025, -7.45058e-08),
+        	(-0.25, 0.866025, 0.433013),
+        	(0.25, 0.866025, 0.433013),
+        	(0.433013, 0.5, 0.75),
+        	(-0.433013, 0.5, 0.75),
+        	(-0.866025, 0.5, -1.29048e-07),
+        	(-0.433013, 0.5, -0.75),
+        	(0.433013, 0.5, -0.75),
+        	(0.866025, 0.5, 0),
+        	(0.433013, 0.5, 0.75),
+        	(0.5, 0, 0.866025),
+        	(-0.5, 0, 0.866025),
+        	(-1, 0, -1.49012e-07),
+        	(-0.5, 0, -0.866026), 
+        	(0.5, 0, -0.866025), 
+        	(1, 0, 0), 
+        	(0.5, 0, 0.866025), 
+        	(0.433013, -0.5, 0.75), 
+        	(-0.433013, -0.5, 0.75), 
+        	(-0.866025, -0.5, -1.29048e-07), 
+        	(-0.433013, -0.5, -0.75), 
+        	(0.433013, -0.5, -0.75), 
+        	(0.866025, -0.5, 0), 
+        	(0.433013, -0.5, 0.75),
+        	(0.25, -0.866025, 0.433013), 
+        	(-0.25, -0.866025, 0.433013), 
+        	(-0.5, -0.866025, -7.45058e-08), 
+        	(-0.25, -0.866025, -0.433013), 
+        	(0.25, -0.866025, -0.433013), 
+        	(0.5, -0.866025, 0), 
+        	(0.25, -0.866025, 0.433013), 
+        	(0, -1, 0), 
+        	(-0.25, -0.866025, -0.433013), 
+        	(-0.433013, -0.5, -0.75), 
+        	(-0.5, 0, -0.866026), 
+        	(-0.433013, 0.5, -0.75), 
+        	(-0.25, 0.866025, -0.433013), 
+        	(0, 1, 0), 
+        	(-0.5, 0.866025, -7.45058e-08), 
+        	(-0.866025, 0.5, -1.29048e-07), 
+        	(-1, 0, -1.49012e-07), 
+        	(-0.866025, -0.5, -1.29048e-07), 
+        	(-0.5, -0.866025, -7.45058e-08), 
+        	(0, -1, 0), (0.5, -0.866025, 0), 
+        	(0.866025, -0.5, 0), 
+        	(1, 0, 0), 
+        	(0.866025, 0.5, 0), 
+        	(0.5, 0.866025, 0), 
+        	(0, 1, 0), 
+        	(0.25, 0.866025, -0.433013), 
+        	(0.433013, 0.5, -0.75), 
+        	(0.5, 0, -0.866025), 
+        	(0.433013, -0.5, -0.75), 
+        	(0.25, -0.866025, -0.433013), 
+        	(0, -1, 0), 
+        	(-0.25, -0.866025, 0.433013), 
+        	(-0.433013, -0.5, 0.75), 
+        	(-0.5, 0, 0.866025), 
+        	(-0.433013, 0.5, 0.75), 
+        	(-0.25, 0.866025, 0.433013), 
+        	(0, 1, 0)
+        	], 
+        	k=[
+        	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 
+        	16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 
+        	31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 
+        	46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 
+        	61, 62, 63, 64, 65, 66
+        	], d=1)
 
 def create_roundpointer(shapeTitle):
-        return pm.curve(name=shapeTitle, p=[(7.78772e-08, 1.94693e-08, 1), (0, 1, 0), (0.707107, 0.707107, 0), (1, 0, 0), (0.707107, -0.707107, 0), (0, -1, 0), (-0.707107, -0.707107, 0), (-1, 0, 0), (-0.707107, 0.707107, 0), (0, 1, 0), (0, 0.923879, -0.382683), (0.653281, 0.653281, -0.382683), (0.92388, 0, -0.382683), (0.653281, -0.653281, -0.382683), (0, -0.923879, -0.382683), (-0.653281, -0.653281, -0.382683), (-0.923879, 0, -0.382683), (-0.653281, 0.653281, -0.382683), (0, 0.923879, -0.382683), (0, 0.707107, -0.707107), (0.5, 0.5, -0.707107), (0.707107, 0, -0.707107), (0.5, -0.5, -0.707107), (0, -0.707107, -0.707107), (-0.5, -0.5, -0.707107), (-0.707107, 0, -0.707107), (-0.5, 0.5, -0.707107), (0, 0.707107, -0.707107), (0, 0.382683, -0.92388), (0.270598, 0.270598, -0.92388), (0.382683, 0, -0.92388), (0.270598, -0.270598, -0.92388), (0, -0.382683, -0.92388), (-0.270598, -0.270598, -0.92388), (-0.382683, 0, -0.92388), (-0.270598, 0.270598, -0.92388), (0, 0.382683, -0.92388), (0, 0, -1), (0, -0.382683, -0.92388), (0, -0.707107, -0.707107), (0, -0.923879, -0.382683), (0, -1, 0), (7.78772e-08, 1.94693e-08, 1), (0.707107, -0.707107, 0), (0.653281, -0.653281, -0.382683), (0.5, -0.5, -0.707107), (0.270598, -0.270598, -0.92388), (0, 0, -1), (-0.270598, 0.270598, -0.92388), (-0.5, 0.5, -0.707107), (-0.653281, 0.653281, -0.382683), (-0.707107, 0.707107, 0), (7.78772e-08, 1.94693e-08, 1), (0.707107, 0.707107, 0), (0.653281, 0.653281, -0.382683), (0.5, 0.5, -0.707107), (0.270598, 0.270598, -0.92388), (0, 0, -1), (-0.270598, -0.270598, -0.92388), (-0.5, -0.5, -0.707107), (-0.653281, -0.653281, -0.382683), (-0.707107, -0.707107, 0), (7.78772e-08, 1.94693e-08, 1)], k=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62], d=1)
+        return pm.curve(name=shapeTitle, p=[
+        	(7.78772e-08, 1.94693e-08, 1), 
+        	(0, 1, 0), 
+        	(0.707107, 0.707107, 0), 
+        	(1, 0, 0), 
+        	(0.707107, -0.707107, 0), 
+        	(0, -1, 0), 
+        	(-0.707107, -0.707107, 0), 
+        	(-1, 0, 0), 
+        	(-0.707107, 0.707107, 0), 
+        	(0, 1, 0), 
+        	(0, 0.923879, -0.382683), 
+        	(0.653281, 0.653281, -0.382683), 
+        	(0.92388, 0, -0.382683), 
+        	(0.653281, -0.653281, -0.382683), 
+        	(0, -0.923879, -0.382683), 
+        	(-0.653281, -0.653281, -0.382683), 
+        	(-0.923879, 0, -0.382683), 
+        	(-0.653281, 0.653281, -0.382683), 
+        	(0, 0.923879, -0.382683), 
+        	(0, 0.707107, -0.707107), 
+        	(0.5, 0.5, -0.707107), 
+        	(0.707107, 0, -0.707107), 
+        	(0.5, -0.5, -0.707107), 
+        	(0, -0.707107, -0.707107), 
+        	(-0.5, -0.5, -0.707107), 
+        	(-0.707107, 0, -0.707107), 
+        	(-0.5, 0.5, -0.707107), 
+        	(0, 0.707107, -0.707107), 
+        	(0, 0.382683, -0.92388), 
+        	(0.270598, 0.270598, -0.92388), 
+        	(0.382683, 0, -0.92388), 
+        	(0.270598, -0.270598, -0.92388), 
+        	(0, -0.382683, -0.92388), 
+        	(-0.270598, -0.270598, -0.92388), 
+        	(-0.382683, 0, -0.92388), 
+        	(-0.270598, 0.270598, -0.92388), 
+        	(0, 0.382683, -0.92388), 
+        	(0, 0, -1), 
+        	(0, -0.382683, -0.92388), 
+        	(0, -0.707107, -0.707107), 
+        	(0, -0.923879, -0.382683), 
+        	(0, -1, 0), 
+        	(7.78772e-08, 1.94693e-08, 1), 
+        	(0.707107, -0.707107, 0), 
+        	(0.653281, -0.653281, -0.382683), 
+        	(0.5, -0.5, -0.707107),
+        	(0.270598, -0.270598, -0.92388), 
+        	(0, 0, -1), 
+        	(-0.270598, 0.270598, -0.92388), 
+        	(-0.5, 0.5, -0.707107), 
+        	(-0.653281, 0.653281, -0.382683), 
+        	(-0.707107, 0.707107, 0), 
+        	(7.78772e-08, 1.94693e-08, 1), 
+        	(0.707107, 0.707107, 0), 
+        	(0.653281, 0.653281, -0.382683), 
+        	(0.5, 0.5, -0.707107), 
+        	(0.270598, 0.270598, -0.92388), 
+        	(0, 0, -1), 
+        	(-0.270598, -0.270598, -0.92388), 
+        	(-0.5, -0.5, -0.707107), 
+        	(-0.653281, -0.653281, -0.382683), 
+        	(-0.707107, -0.707107, 0), 
+        	(7.78772e-08, 1.94693e-08, 1)
+        	], k=[
+        	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 
+        	16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 
+        	31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 
+        	46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 
+        	61, 62
+        	], d=1)
 
 def create_compass(shapeTitle): 
-    newShape = pm.curve(name="Microedge1", p=[(-0.309017, 0, -0.951057),
-        (-0.455125, 0, -0.882908), (-0.587785, 0, -0.809017), (-0.710365, 0,
-            -0.710365), (-0.809017, 0, -0.587785), (-0.885102, 0, -0.457095),
-        (-0.951057, 0, -0.309017)], k=[0, 0, 0, 1, 2, 3, 4, 4, 4], d=3)
+    newShape = pm.curve(name="Microedge1", p=[
+    	(-0.309017, 0, -0.951057),
+        (-0.455125, 0, -0.882908), 
+        (-0.587785, 0, -0.809017), 
+        (-0.710365, 0, -0.710365), 
+        (-0.809017, 0, -0.587785), 
+        (-0.885102, 0, -0.457095),
+        (-0.951057, 0, -0.309017)
+        ], k=[0, 0, 0, 1, 2, 3, 4, 4, 4], d=3)
     sidepiece1 = newShape
     sidepiece_shape1 = sidepiece1.getShape();
     sidepiece_shape1.overrideEnabled.set(True)
-    newShape = pm.curve(name="Microedge2", p=[(0.309017, 0, -0.951057),
-        (0.457095, 0, -0.885102), (0.587785, 0, -0.809017), (0.709632, 0,
-            -0.70902), (0.809017, 0, -0.587785), (0.885102, 0, -0.457095),
-        (0.951057, 0, -0.309017)], k=[0, 0, 0, 1, 2, 3, 4, 4, 4], d=3)
+    newShape = pm.curve(name="Microedge2", p=[
+    	(0.309017, 0, -0.951057), 
+    	(0.457095, 0, -0.885102), 
+    	(0.587785, 0, -0.809017), 
+    	(0.709632, 0, -0.70902), 
+    	(0.809017, 0, -0.587785), 
+    	(0.885102, 0, -0.457095),
+        (0.951057, 0, -0.309017)
+        ], k=[0, 0, 0, 1, 2, 3, 4, 4, 4], d=3)
     sidepiece2 = newShape
     sidepiece_shape2 = newShape.getShape();
     sidepiece_shape2.overrideEnabled.set(True)
-    newShape = pm.curve(name="Microedge3", p=[(0.951057, 0, 0.309017),
-        (0.885102, 0, 0.457095), (0.809017, 0, 0.587785), (0.710365, 0,
-            0.710365), (0.587785, 0, 0.809017), (0.455125, 0, 0.882908),
-        (0.309017, 0, 0.951057)], k=[0, 0, 0, 1, 2, 3, 4, 4, 4], d=3)
+    newShape = pm.curve(name="Microedge3", p=[
+    	(0.951057, 0, 0.309017), 
+    	(0.885102, 0, 0.457095), 
+    	(0.809017, 0, 0.587785), 
+    	(0.710365, 0, 0.710365), 
+    	(0.587785, 0, 0.809017), 
+    	(0.455125, 0, 0.882908),
+        (0.309017, 0, 0.951057)
+        ], k=[0, 0, 0, 1, 2, 3, 4, 4, 4], d=3)
     sidepiece3 = newShape
     sidepiece_shape3 = newShape.getShape();
     sidepiece_shape3.overrideEnabled.set(True)
-    newShape = pm.curve(name="Microedge4", p=[(-0.309017, 0, 0.951057),
-        (-0.457095, 0, 0.885102), (-0.587785, 0, 0.809017), (-0.710365, 0,
-            0.710365), (-0.809017, 0, 0.587785), (-0.882908, 0, 0.455125),
+    newShape = pm.curve(name="Microedge4", p=[
+    	(-0.309017, 0, 0.951057),
+        (-0.457095, 0, 0.885102), 
+        (-0.587785, 0, 0.809017), 
+        (-0.710365, 0, 0.710365), 
+        (-0.809017, 0, 0.587785), 
+        (-0.882908, 0, 0.455125),
         (-0.951057, 0, 0.309017)], k=[0, 0, 0, 1, 2, 3, 4, 4, 4], d=3)
     sidepiece4 = newShape
     sidepiece_shape4 = newShape.getShape();
     sidepiece_shape4.overrideEnabled.set(True)
     microedge = pm.parent(shape="relative")
-    backCompass = pm.curve(name="compassBack", p=[(0.309017, 0, 0.951057),
-        (0.309017, 0, 1.296348), (0.548167, 0, 1.296348), (0, 0, 2),
-        (-0.548167, 0, 1.296347), (-0.309017, 0, 1.296347), (-0.309017, 0,
-            0.951057)], k=[0, 1, 2, 3, 4, 5, 6], d=1)
-    leftCompass = pm.curve(name="compassLeft", p=[(0.309017, 0, 0.951057),
-        (0.309017, 0, 1.296348), (0.548167, 0, 1.296348), (0, 0, 2),
-        (-0.548167, 0, 1.296347), (-0.309017, 0, 1.296347), (-0.309017, 0,
-            0.951057)], k=[0, 1, 2, 3, 4, 5, 6], d=1)
-    forwardCompass = pm.curve(name="compassForward", p=[(0.309017, 0,
-        0.951057), (0.309017, 0, 1.296348), (0.548167, 0, 1.296348), (0, 0,
-        2), (-0.548167, 0, 1.296347), (-0.309017, 0, 1.296347), (-0.309017,
-        0, 0.951057)], k=[0, 1, 2, 3, 4, 5, 6], d=1)
-    rightCompass = pm.curve(name="compassRight", p=[(0.309017, 0, 0.951057),
-        (0.309017, 0, 1.296348), (0.548167, 0, 1.296348), (0, 0, 2),
-        (-0.548167, 0, 1.296347), (-0.309017, 0, 1.296347), (-0.309017, 0,
-            0.951057)], k=[0, 1, 2, 3, 4, 5, 6], d=1)
+    backCompass = pm.curve(name="compassBack", p=[
+    	(0.309017, 0, 0.951057),
+        (0.309017, 0, 1.296348), 
+        (0.548167, 0, 1.296348), 
+        (0, 0, 2),
+        (-0.548167, 0, 1.296347), 
+        (-0.309017, 0, 1.296347), 
+        (-0.309017, 0, 0.951057)
+        ], k=[0, 1, 2, 3, 4, 5, 6], d=1)
+    leftCompass = pm.curve(name="compassLeft", p=[
+    	(0.309017, 0, 0.951057),
+        (0.309017, 0, 1.296348), 
+        (0.548167, 0, 1.296348), 
+        (0, 0, 2),
+        (-0.548167, 0, 1.296347), 
+        (-0.309017, 0, 1.296347), 
+        (-0.309017, 0, 0.951057)
+        ], k=[0, 1, 2, 3, 4, 5, 6], d=1)
+    forwardCompass = pm.curve(name="compassForward", p=[
+    	(0.309017, 0, 0.951057), 
+    	(0.309017, 0, 1.296348), 
+    	(0.548167, 0, 1.296348), 
+    	(0, 0, 2), 
+    	(-0.548167, 0, 1.296347), 
+    	(-0.309017, 0, 1.296347), 
+    	(-0.309017, 0, 0.951057)
+    	], k=[0, 1, 2, 3, 4, 5, 6], d=1)
+    rightCompass = pm.curve(name="compassRight", p=[
+    	(0.309017, 0, 0.951057),
+        (0.309017, 0, 1.296348), 
+        (0.548167, 0, 1.296348), 
+        (0, 0, 2),
+        (-0.548167, 0, 1.296347), 
+        (-0.309017, 0, 1.296347), 
+        (-0.309017, 0, 0.951057)
+        ], k=[0, 1, 2, 3, 4, 5, 6], d=1)
     leftCompass.ry.set(90)
     backCompass.ry.set(180)
     rightCompass.ry.set(270)
@@ -190,14 +436,13 @@ def create_compass(shapeTitle):
     shapeName = pm.rename(newGroup, shapeTitle)
     return newGroup
 
+def fkikSelectEnd(*args):
+	txt_endJoint.setText(getSelected(True))
+	
 def fkikSelectRoot(*args):
-	rootJoint.setText(getSelected(True))
+	txt_rootJoint.setText(getSelected(True))
 
 def createShape(*args):
-	print(args[0].getValue())
-	print(args[1].getText())
-	print(args[2].getText())
-	print(args[3].getValue())
 	shapeObject = args[0].getValue()
 	shapeName = args[1].getText()
 	shapeSuffix = args[2].getText()
@@ -236,15 +481,15 @@ def createShape(*args):
 	#move curve to desired locaiton, if not set to origin
 
 def autocloseWindowToggle(*args):
-	windowKeepAlive = keepAliveCheck.getValue()
+	windowKeepAlive = chk_keepAlive.getValue()
 	toast("Keep alive toggled")
 
-def fkikSelectEnd(*args):
-	endJoint.setText(getSelected(True))
-
 def gui():
-	global connector_window, appendPad, rootJoint, windowKeepAlive, keepAliveCheck, endJoint
-	connector_window = pm.window(title="Connector Window", width=windowWidth, height=windowHeight, sizeable=True)
+	global wnd_connector_window, windowKeepAlive
+	global chk_keepAlive, chk_appendPad
+	global txt_rootJoint, txt_endJoint
+	global opt_shapeOptions
+	wnd_connector_window = pm.window(title="Connector Window", width=windowWidth, height=windowHeight, sizeable=True)
 	pm.columnLayout(numberOfChildren=2, columnAlign="left")
 	mainTabs = pm.tabLayout(innerMarginWidth=5, innerMarginHeight=5)
 
@@ -268,7 +513,7 @@ def gui():
 
 	pm.rowLayout(numberOfColumns=2, columnWidth=[(1,350)])
 	pm.text("Automatically append \"_pad\" to end?")
-	appendPad = pm.checkBox("appendPad", value=True, label="")
+	chk_appendPad = pm.checkBox("appendPad", value=True, label="")
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=3)
@@ -283,9 +528,10 @@ def gui():
 	tab_3 = pm.columnLayout(numberOfChildren=2, columnAlign="left")
 	pm.frameLayout(label="Choose options:", width=450)
 	
-	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]), width=450, columnWidth=([1, 200], [2, 250]))
+	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
+		width=450, columnWidth=([1, 200], [2, 250]))
 	pm.text(label="Choose a shape:")
-	shapeOptions = pm.optionMenu(width=100)
+	opt_shapeOptions = pm.optionMenu(width=100)
 	pm.menuItem(label="Circle")
 	pm.menuItem(label="Sphere")
 	pm.menuItem(label="Square")
@@ -297,56 +543,63 @@ def gui():
 	pm.menuItem(label="Compass")
 	pm.setParent("..")
 	
-	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]), width=450, columnWidth=([1, 200], [2, 250]))
+	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
+		width=450, columnWidth=([1, 200], [2, 250]))
 	pm.text(label="Enter a name.\nLeave blank for default shape name.")
-	shapeName = pm.textField(placeholderText="shape")
+	txt_shapeName = pm.textField(placeholderText="shape")
 	pm.setParent("..")
 
-	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]), width=450, columnWidth=([1, 200], [2, 250]))
-	pm.text(label="Insert a suffix.\nLeave blank for default\n\"_icon\" to be added")
-	shapeSuffix = pm.textField(placeholderText="_icon")
+	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
+		width=450, columnWidth=([1, 200], [2, 250]))
+	pm.text(label="Insert a suffix.\nLeave blank for default\n\"icon\" to be added")
+	txt_shapeSuffix = pm.textField(placeholderText="icon")
 	pm.setParent("..")
 
-	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]), width=450, columnWidth=([1, 200], [2, 250]))
+	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
+		width=450, columnWidth=([1, 200], [2, 250]))
 	pm.text(label="Shape is placed on:")
-	placementOption = pm.optionMenu(width=150)
+	opt_placementOption = pm.optionMenu(width=150)
 	pm.menuItem(label="Origin")
 	pm.menuItem(label="Currently Selected Object")
 	pm.setParent("..")
 
-	pm.rowLayout(numberOfColumns=1, columnAlign=([1, "center"]), width=450, columnWidth=([1,450]))
-	pm.button(label="Create Shape", command=pm.Callback(createShape, shapeOptions, shapeName, shapeSuffix, placementOption))
+	pm.rowLayout(numberOfColumns=1, columnAlign=([1, "center"]), width=450,
+		columnWidth=([1,450]))
+	pm.button(label="Create Shape", command=pm.Callback(createShape,
+		opt_shapeOptions, txt_shapeName, txt_shapeSuffix,
+		opt_placementOption))
 	pm.setParent("..")
 
 	pm.setParent(mainTabs)
 	#Tab 3 end
 
 	tab_4 = pm.columnLayout(numberOfChildren=1, columnAlign="left")
-	pm.rowLayout(numberOfColumns=3, width=450, columnWidth=([1, 150], [2, 200], [3, 150]))
+	pm.rowLayout(numberOfColumns=3, width=450,
+		columnWidth=([1, 150], [2, 200], [3, 150]))
 	pm.text(label="Select the root joint:")
-	rootJoint = pm.textField(placeholderText="Choose joint", editable=False)
+	txt_rootJoint = pm.textField(placeholderText="Choose joint", editable=False)
 	pm.button(label="Select root", command=pm.Callback(fkikSelectRoot))
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=3, width=450, columnWidth=([1, 150],[2, 200],[3, 150]))
 	pm.text(label="Select the end joint\n(for IK creation)")
-	endJoint = pm.textField(placeholderText="Choose joint", editable=False)
+	txt_endJoint = pm.textField(placeholderText="Choose joint", editable=False)
 	pm.button(label="Select end joint", command=pm.Callback(fkikSelectEnd))
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350], [2, 150]))
 	pm.text(label="Create controls on respective joints?")
-	pm.checkBox("", value=True)
+	chk_control_create = pm.checkBox("", value=True)
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350],[2, 150]))
 	pm.text("Create controls in hierarchy?")
-	pm.checkBox(label="", value=True)
+	chk_control_hierarchy = pm.checkBox(label="", value=True)
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350], [2, 150]))
 	pm.text(label="Connect controls on respective joints?")
-	pm.checkBox(label="", value=True)
+	chk_control_connect = pm.checkBox(label="", value=True)
 	pm.setParent("..")
 
 	pm.setParent(mainTabs)
@@ -360,6 +613,6 @@ def gui():
 
 	
 
-	keepAliveCheck = pm.checkBox("Automatically close window", value=windowKeepAlive, changeCommand=pm.Callback(autocloseWindowToggle))
+	chk_keepAlive = pm.checkBox("Automatically close window", value=windowKeepAlive, changeCommand=pm.Callback(autocloseWindowToggle))
 
 	pm.showWindow(connector_window)
