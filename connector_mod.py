@@ -693,12 +693,34 @@ def fkik_generateStuff(*args):
 	connectControlsFlag = chk_control_connect.getValue()
 	onHand = chk_createHandControl.getValue()
 	#duplicate joint for FK
-	#duplicate again for IK
-	#pad each
-	#group the fk to the base joint
-	#group the ik to the base joint
-
-
+	fk_chain = cmds.duplicate(fkik_rootJoint, name=fkik_rootJoint.replace("_bind", "_fk"), rc=True)
+	# now go through the rest and rename those
+	inc = 0
+	for fkInc in fk_chain:
+		print fkInc
+		if (inc > 0):
+			newName = fkInc.replace("_bind1", "_fk")
+			newName = newName.replace("_waste1", "_fk")
+			print "New name: " + newName
+			print "Increment: " + fkInc
+			print ""
+			pm.rename(fkInc, newName)
+		inc = inc + 1
+	# duplicate again and do IK this time
+	ik_chain = cmds.duplicate(fkik_rootJoint, name=fkik_rootJoint.replace("_bind", "_ik"), rc=True)
+	# now go through the rest and rename those
+	inc = 0
+	for ikInc in ik_chain:
+		print ikInc
+		if (inc > 0):
+			newName = ikInc.replace("_bind1", "_ik")
+			newName = newName.replace("_waste1", "_ik")
+			print "New name: " + newName
+			print "Increment: " + ikInc
+			print ""
+			pm.rename(ikInc, newName)
+		inc = inc + 1
+	
 
 def freezeTransform(jointName):
 	pm.makeIdentity(jointName, n=0, s=1, r=1, t=1, apply=True, pn=1)
