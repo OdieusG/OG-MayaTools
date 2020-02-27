@@ -65,9 +65,11 @@ else:
 	"shapes_placedOn":"Shape is placed on:",
 	"shapes_button":"Create Shape",
 	"fkik_selectRootText":"Select the root joint",
-	"fkik_selectEndText":"Select the end joint\j(for IK creation)",
+	"fkik_selectEndText":"Select the end joint\n(for IK creation)",
 	"fkik_selectRootButton":"Select root",
 	"fkik_selectEndButton":"Select end",
+	"fkik_selectHandButton":"Select hand Joint",
+	"fkik_createControl":"Create control on hand?",
 	"fkik_createControlsText":"Create controls on respective joints?",
 	"fkik_createHierarchyText":"Create controls in hierarchy?",
 	"fkik_connectControlsText":"Connect controls on respective joints?",
@@ -92,7 +94,6 @@ def closeWindow():
 
 def selectItem(*args):
 	txt_jointField.setText(getSelected(True))
-	
 
 def autocloseWindowToggle(*args):
 	windowKeepAlive = chk_keepAlive.getValue()
@@ -102,7 +103,12 @@ def wnd_rowTODO():
 
 	pm.columnLayout(numberOfChildren=2, backgroundColor=backColor_gray)
 	pm.text(label="<i>Things to work on</i>")
-	pm.text(label="-Autosnapper\n-Joint connector\n+Shape maker integration\n-Joint orient tool", align="left")
+	todoList = "+Autosnapper\n"
+	todoList = todoList + "+Joint connector\n"
+	todoList = todoList + "+Shape maker integration\n"
+	todoList = todoList + "-Joint orient tool\n"
+	todoList = todoList + ""
+	pm.text(label=todoList, align="left")
 	pm.setParent("..")
 
 	pm.setParent("..")
@@ -111,18 +117,18 @@ def wnd_rowPad():
 	global txt_jointField, chk_appendPad
 	pm.frameLayout(collapsable=True, label="Pad Object", width=500)
 
-	pm.rowLayout(numberOfColumns=3, columnWidth=[(1, 150), (2, 200), (3, 100)], backgroundColor=backColor_gray)
+	pm.rowLayout(numberOfColumns=3, columnWidth=[(1, 150), (2, 200), (3, 100)])
 	pm.text(label=phrases['pad_chooseObjectText'])
 	txt_jointField = pm.textField(placeholderText=phrases['general_chooseJoint'], editable=False)
 	pm.button(label=phrases['pad_chooseObjectBtn'], command=pm.Callback(selectItem))
 	pm.setParent("..")
 
-	pm.rowLayout(numberOfColumns=2, columnWidth=[(1,350)], backgroundColor=backColor_gray)
+	pm.rowLayout(numberOfColumns=2, columnWidth=[(1,350)])
 	pm.text(phrases['pad_append'])
 	chk_appendPad = pm.checkBox("appendPad", value=True, label="")
 	pm.setParent("..")
 
-	pm.rowLayout(numberOfColumns=3, backgroundColor=backColor_gray)
+	pm.rowLayout(numberOfColumns=3)
 	pm.text(width=150, label="")
 	pm.button(label=phrases['pad_append'], command=pm.Callback(padObject))
 	pm.text(width=150, label="")
@@ -155,7 +161,7 @@ def wnd_rowShapes():
 	pm.frameLayout(label="Shape Maker", width=500, collapsable=True)
 	
 	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
-		width=450, columnWidth=([1, 200], [2, 250]), backgroundColor=backColor_gray)
+		width=450, columnWidth=([1, 200], [2, 250]))
 	pm.text(label=phrases['shapes_chooseShape'])
 	opt_shapeOptions = pm.optionMenu(width=100)
 	pm.menuItem(label="Circle")
@@ -170,30 +176,33 @@ def wnd_rowShapes():
 	pm.setParent("..")
 	
 	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
-		width=450, columnWidth=([1, 200], [2, 250]), backgroundColor=backColor_gray)
+		width=450, columnWidth=([1, 200], [2, 250]))
 	pm.text(label=phrases['shapes_shapeName'])
-	txt_shapeName = pm.textField(placeholderText=phrases['shapes_defaultShapeText'])
+	txt_shapeName = pm.textField(
+		placeholderText=phrases['shapes_defaultShapeText'])
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
-		width=450, columnWidth=([1, 200], [2, 250]), backgroundColor=backColor_gray)
+		width=450, columnWidth=([1, 200], [2, 250]))
 	pm.text(label=phrases['shapes_shapeSuffix'])
-	txt_shapeSuffix = pm.textField(placeholderText=phrases['shapes_defaultControlText'])
+	txt_shapeSuffix = pm.textField(
+		placeholderText=phrases['shapes_defaultControlText'])
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
-		width=450, columnWidth=([1, 200], [2, 250]), backgroundColor=backColor_gray)
+		width=450, columnWidth=([1, 200], [2, 250]))
 	pm.text(label=phrases['shapes_placedOn'])
 	opt_placementOption = pm.optionMenu(width=150)
 	pm.menuItem(label="Origin")
 	pm.menuItem(label="Currently Selected Object")
 	pm.setParent("..")
 
-	pm.rowLayout(numberOfColumns=1, columnAlign=([1, "center"]), width=450,
-		columnWidth=([1,450]), backgroundColor=backColor_gray)
+	pm.rowLayout(numberOfColumns=3, columnWidth=([1,150], [2, 150]))
+	pm.text(label="")
 	pm.button(label=phrases['shapes_button'], command=pm.Callback(createShape,
 		opt_shapeOptions, txt_shapeName, txt_shapeSuffix,
 		opt_placementOption))
+	pm.text(label="")
 	pm.setParent("..")
 
 	pm.setParent("..")
@@ -604,75 +613,189 @@ def createShape(*args):
 	#move curve to desired locaiton, if not set to origin
 
 def wnd_rowFKIK():
-	global txt_rootJoint, txt_endJoint, chk_control_create
-	global chk_control_hierarchy, chk_control_connect
+	global txt_rootJoint, txt_endJoint, txt_handJoint
+	global chk_control_create, chk_control_hierarchy, chk_control_connect
+	global chk_createHandControl
+	global btn_selectHandControl
+	global fkik_innerFrame
 	pm.frameLayout(collapsable=True, label="FK/IK")
 
 	pm.rowLayout(numberOfColumns=3, width=500,
-		columnWidth=([1, 200], [2, 150], [3, 150]), backgroundColor=backColor_gray)
+		columnWidth=([1, 200], [2, 150], [3, 150]))
 	pm.text(label=phrases['fkik_selectRootText'])
-	txt_rootJoint = pm.textField(placeholderText=phrases['general_chooseJoint'],
-		editable=False)
-	pm.button(label=phrases['fkik_selectRootButton'], command=pm.Callback(fkikSelectRoot), width=100)
+	txt_rootJoint = pm.textField(
+		placeholderText=phrases['general_chooseJoint'], editable=False)
+	pm.button(label=phrases['fkik_selectRootButton'],
+		command=pm.Callback(fkikSelectRoot), width=100)
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=3, width=500, columnWidth=([1, 200],[2, 150],
-		[3, 150]), backgroundColor=backColor_gray)
+		[3, 150]))
 	pm.text(label=phrases['fkik_selectEndText'])
-	txt_endJoint = pm.textField(placeholderText=phrases['general_chooseJoint'],
-		editable=False)
-	pm.button(label=phrases['fkik_selectEndButton'], command=pm.Callback(fkikSelectEnd), width=100)
+	txt_endJoint = pm.textField(
+		placeholderText=phrases['general_chooseJoint'], editable=False)
+	pm.button(label=phrases['fkik_selectEndButton'],
+		command=pm.Callback(fkikSelectEnd), width=100)
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350],
-		[2, 150]), backgroundColor=backColor_gray)
+		[2, 150]))
 	pm.text(label=phrases['fkik_createControlsText'])
-	chk_control_create = pm.checkBox("", value=True)
+	chk_control_create = pm.checkBox(label="", value=True,
+		onCommand=pm.Callback(toggleJointCreation, True),
+		offCommand=pm.Callback(toggleJointCreation, False))
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350],
-		[2, 150]), backgroundColor=backColor_gray)
+		[2, 150]))
 	pm.text(phrases['fkik_createHierarchyText'])
 	chk_control_hierarchy = pm.checkBox(label="", value=True)
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350],
-		[2, 150]), backgroundColor=backColor_gray)
+		[2, 150]))
 	pm.text(label=phrases['fkik_connectControlsText'])
 	chk_control_connect = pm.checkBox(label="", value=True)
 	pm.setParent("..")
 
-	pm.rowLayout(numberOfColumns=3)
-	pm.text(label="test")
-	pm.text(label="text2")
-	pm.text(label="text3")
+	fkik_innerFrame = pm.frameLayout(label="Hand Connection", collapsable=True) # Embedded frame
+
+	pm.rowLayout(numberOfColumns=2, columnWidth=([1, 350], [2, 150]))
+	pm.text(label=phrases['fkik_createControl'])
+	chk_createHandControl = pm.checkBox(label="", value=True,
+		changeCommand=pm.Callback(toggleHandConnection))
+	pm.setParent("..")
+
+	pm.rowLayout(numberOfColumns=3, columnWidth=([1, 200], [2, 150],
+		[3, 150]))
+	pm.text(label="Hand Joint:")
+	txt_handJoint = pm.textField(
+		placeholderText=phrases['general_chooseJoint'], editable=False)
+	btn_selectHandControl = pm.button(label=phrases['fkik_selectHandButton'],
+		command=pm.Callback(fkikSelectHand))
 	pm.setParent("..")
 
 	pm.setParent("..")
-	
+
+	pm.rowLayout(numberOfColumns=3, columnWidth=([1, 150], [3, 150]))
+	pm.text(label="")
+	pm.button(label="Generate", width=150, command=pm.Callback(fkik_generateStuff))
+	pm.text(label="")
+	pm.setParent("..")
+
+def fkik_generateStuff(*args):
+	global chk_control_connect, chk_control_create, chk_control_hierarchy, chk_createHandControl
+	fkik_rootJoint = txt_rootJoint.getText()
+	fkik_endJoint = txt_endJoint.getText()
+	handJoint = txt_handJoint.getText()
+	createControlFlag = chk_control_create.getValue()
+	inHierarchyFlag = chk_control_hierarchy.getValue()
+	connectControlsFlag = chk_control_connect.getValue()
+	onHand = chk_createHandControl.getValue()
+	#duplicate joint for FK
+	#duplicate again for IK
+	#pad each
+	#group the fk to the base joint
+	#group the ik to the base joint
+
+
+
+def freezeTransform(jointName):
+	pm.makeIdentity(jointName, n=0, s=1, r=1, t=1, apply=True, pn=1)
+    
+def orient_processJoints(*args):
+	jointBeingManipulated = txt_orientJointBase.getText()
+	freezeTransform(jointBeingManipulated)
+	pm.joint(jointBeingManipulated, zso=1, ch=1, e=1, oj='xyz', secondaryAxisOrient='yup')
+
+def toggleJointCreation(*args):
+	chk_control_hierarchy.setEnable(chk_control_create.getValue())
+	chk_control_connect.setEnable(chk_control_create.getValue())
+	fkik_innerFrame.setEnable(chk_control_create.getValue())
+
+
+def toggleHandConnection(*args):
+	btn_selectHandControl.setEnable(chk_createHandControl.getValue())
+
 def fkikSelectEnd(*args):
 	txt_endJoint.setText(getSelected(True))
 
 def fkikSelectRoot(*args):
 	txt_rootJoint.setText(getSelected(True))
 
+def fkikSelectHand(*args):
+	txt_handJoint.setText(getSelected(True))
+
+def orient_selectJoint(*args):
+	txt_orientJointBase.setText(getSelected(True))
+
+def btn_closeWindow(*args):
+	global chk_keepAlive
+	chk_keepAlive.setValue=False
+	closeWindow()
+
+def wnd_jointOrient():
+	global txt_orientJointBase
+	pm.frameLayout(collapsable=True, label="")
+
+	pm.rowLayout(numberOfColumns=3, columnWidth=([1, 200], [2, 150],
+		[3, 150]))
+	pm.text(label="Select Joint")
+	txt_orientJointBase = pm.textField(placeholderText=phrases['general_chooseJoint'], editable=False)
+	pm.button(label="Select Joint", command=pm.Callback(orient_selectJoint))
+	pm.setParent("..")
+
+	pm.rowLayout(numberOfColumns=3, columnWidth=([1, 150], [3, 150]))
+	pm.text(label="")
+	pm.button(label="Orient", width=150, command=pm.Callback(orient_processJoints))
+	pm.text(label="")
+	pm.setParent("..")
+	
+	pm.setParent("..")
+
+def processButton():
+	pm.rowLayout(numberOfColumns=3, columnWidth=([1, 150], [3, 150]))
+	pm.text(label="")
+	pm.button(label="", width=150)
+	pm.text(label="")
+	pm.setParent("..")
+
 def wnd_row_default():
 	pm.frameLayout(collapsable=True, label="")
+
+	pm.rowLayout(numberOfColumns=1)
+	pm.text(label="blank")
 	#More layout in here
+	pm.setParent("..")
+
 	pm.setParent("..")
 
 def gui():
 	global wnd_connector_window, windowKeepAlive
 	global chk_keepAlive
 	wnd_connector_window = pm.window(title="Connector Window", widthHeight=(
-		[windowWidth, windowHeight]), sizeable=False)
-	pm.columnLayout(numberOfChildren=2)
-	pm.scrollLayout(width=windowWidth)
+		[windowWidth, windowHeight]), sizeable=True)
+
+	pm.columnLayout(numberOfChildren=3)
+	chk_keepAlive = pm.checkBox(phrases['main_autocloseWindow'],
+		value=windowKeepAlive,
+		changeCommand=pm.Callback(autocloseWindowToggle))
+
+	pm.scrollLayout(width=windowWidth, height=windowHeight-50)
 	wnd_rowTODO()
 	wnd_rowPad()
 	wnd_rowShapes()
 	wnd_rowFKIK()
+	wnd_jointOrient()
 	pm.setParent("..")
-	chk_keepAlive = pm.checkBox(phrases['main_autocloseWindow'],
-		value=windowKeepAlive, changeCommand=pm.Callback(autocloseWindowToggle))
+
+	pm.setParent("..")
+
+	pm.rowLayout(numberOfColumns=1)
+	pm.button(label="Close Window/Cancel",
+		command=pm.Callback(btn_closeWindow), height=30)
+	pm.setParent("..")
+
+	wnd_connector_window.setSizeable(False)
+
 	pm.showWindow(connector_window)
