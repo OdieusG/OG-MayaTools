@@ -16,6 +16,7 @@ import pymel.core as pm
 import maya.cmds as cmds
 import sys
 
+debugMode=False
 windowWidth = 500
 windowHeight=300
 buttonWidth = 150
@@ -24,19 +25,53 @@ windowKeepAlive=True
 __green__ = 14
 __red__ = 13
 __blue__ = 6
-phrases =  {
+
+if debugMode == True:
+	phrases =  {
+	"general_chooseJoint":"",
+	"pad_chooseObjectText":"",
+	"pad_chooseObjectBtn":"",
+	"pad_append":"",
+	"pad_button":"",
+	"shapes_defaultShapeText":"",
+	"shapes_defaultControlText":"",
+	"shapes_chooseShape":"",
+	"shapes_shapeName":"",
+	"shapes_shapeSuffix":"",
+	"shapes_placedOn":"",
+	"shapes_button":"",
+	"fkik_selectRootText":"",
+	"fkik_selectEndText":"",
+	"fkik_selectRootButton":"",
+	"fkik_selectEndButton":"",
+	"fkik_createControlsText":"",
+	"fkik_createHierarchyText":"",
+	"fkik_connectControlsText":"",
+	"main_autocloseWindow":"",
+	}
+else:
+	phrases =  {
+	"general_chooseJoint":"Choose joint",
 	"pad_chooseObjectText":"Choose an object to pad",
 	"pad_chooseObjectBtn":"Choose Item",
 	"pad_append":"Automatically append \"pad\" to end?",
 	"pad_button":"Pad this",
+	"shapes_defaultShapeText":"shape",
+	"shapes_defaultControlText":"icon",
+	"shapes_chooseShape":"Choose a shape",
 	"shapes_shapeName":"Enter a name.\nLeave blank for default shape name.",
 	"shapes_shapeSuffix":"Insert a suffix.\nLeave blank for default\n\"icon\" to be added",
 	"shapes_placedOn":"Shape is placed on:",
 	"shapes_button":"Create Shape",
 	"fkik_selectRootText":"Select the root joint",
-	"fkik_selectEndText":"Select the end joint",
-
-}
+	"fkik_selectEndText":"Select the end joint\j(for IK creation)",
+	"fkik_selectRootButton":"Select root",
+	"fkik_selectEndButton":"Select end",
+	"fkik_createControlsText":"Create controls on respective joints?",
+	"fkik_createHierarchyText":"Create controls in hierarchy?",
+	"fkik_connectControlsText":"Connect controls on respective joints?",
+	"main_autocloseWindow":"Automatically close window after operation",
+	}
 
 
 def toast(message):
@@ -57,6 +92,41 @@ def closeWindow():
 def selectItem(*args):
 	txt_jointField.setText(getSelected(True))
 	
+
+def autocloseWindowToggle(*args):
+	windowKeepAlive = chk_keepAlive.getValue()
+
+def wnd_rowTODO():
+	pm.frameLayout(collapsable=False, label="TODO", width=450)
+	pm.columnLayout(numberOfChildren=2)
+	pm.text(label="<i>Things to work on</i>")
+	pm.text(label="-Autosnapper\n-Joint connector\n+Shape maker integration\n-Joint orient tool", align="left")
+	pm.setParent("..")
+	pm.setParent("..")
+	
+def wnd_rowPad():
+	global txt_jointField, chk_appendPad
+	pm.frameLayout(collapsable=True, label="Pad Object", width=450)
+
+	pm.rowLayout(numberOfColumns=3, columnWidth=[(1, 150), (2, 200), (3, 100)])
+	pm.text(label=phrases['pad_chooseObjectText'])
+	txt_jointField = pm.textField(placeholderText=phrases['general_chooseJoint'], editable=False)
+	pm.button(label=phrases['pad_chooseObjectBtn'], command=pm.Callback(selectItem))
+	pm.setParent("..")
+
+	pm.rowLayout(numberOfColumns=2, columnWidth=[(1,350)])
+	pm.text(phrases['pad_append'])
+	chk_appendPad = pm.checkBox("appendPad", value=True, label="")
+	pm.setParent("..")
+
+	pm.rowLayout(numberOfColumns=3)
+	pm.text(width=150, label="")
+	pm.button(label=phrases['pad_append'], command=pm.Callback(padObject))
+	pm.text(width=150, label="")
+	pm.setParent("..")
+
+	pm.setParent("..")
+
 def padObject(*args):
 	global chk_appendPad
 	# Get the location of the object getting padded (xform)
@@ -76,6 +146,55 @@ def padObject(*args):
 	#if windowKeepAlive.getValue
 	closeWindow()
 
+def wnd_rowShapes():
+	global opt_shapeOptions, txt_shapeName, txt_shapeSuffix
+	global opt_placementOption
+	pm.frameLayout(label="Choose options:", width=450, collapsable=True)
+	
+	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
+		width=450, columnWidth=([1, 200], [2, 250]))
+	pm.text(label=phrases['shapes_chooseShape'])
+	opt_shapeOptions = pm.optionMenu(width=100)
+	pm.menuItem(label="Circle")
+	pm.menuItem(label="Sphere")
+	pm.menuItem(label="Square")
+	pm.menuItem(label="Cube")
+	pm.menuItem(label="2D Arrow")
+	pm.menuItem(label="3D Arrow")
+	pm.menuItem(label="Round Pointer")
+	pm.menuItem(label="COG Circle")
+	pm.menuItem(label="Compass")
+	pm.setParent("..")
+	
+	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
+		width=450, columnWidth=([1, 200], [2, 250]))
+	pm.text(label=phrases['shapes_shapeName'])
+	txt_shapeName = pm.textField(placeholderText=phrases['shapes_defaultShapeText'])
+	pm.setParent("..")
+
+	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
+		width=450, columnWidth=([1, 200], [2, 250]))
+	pm.text(label=phrases['shapes_shapeSuffix'])
+	txt_shapeSuffix = pm.textField(placeholderText=phrases['shapes_defaultControlText'])
+	pm.setParent("..")
+
+	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
+		width=450, columnWidth=([1, 200], [2, 250]))
+	pm.text(label=phrases['shapes_placedOn'])
+	opt_placementOption = pm.optionMenu(width=150)
+	pm.menuItem(label="Origin")
+	pm.menuItem(label="Currently Selected Object")
+	pm.setParent("..")
+
+	pm.rowLayout(numberOfColumns=1, columnAlign=([1, "center"]), width=450,
+		columnWidth=([1,450]))
+	pm.button(label=phrases['shapes_button'], command=pm.Callback(createShape,
+		opt_shapeOptions, txt_shapeName, txt_shapeSuffix,
+		opt_placementOption))
+	pm.setParent("..")
+
+	pm.setParent("..")
+
 def create_circle(shapeTitle):
     return pm.circle(
         c=(0, 0, 0),
@@ -90,7 +209,6 @@ def create_circle(shapeTitle):
         name=shapeTitle,
         )
 
-
 def create_square(shapeTitle):
     return pm.curve(name=shapeTitle, p=[
     	(0.5, 0, 0.5), 
@@ -99,7 +217,6 @@ def create_square(shapeTitle):
     	(0.5, 0, -0.5), 
     	(0.5, 0, 0.5)],
     	k=[0, 1, 2, 3, 4], d=1)
-
 
 def create_2darrow(shapeTitle):
     return pm.curve(name=shapeTitle, p=[
@@ -112,7 +229,6 @@ def create_2darrow(shapeTitle):
     	(-1, 0, 0), 
     	(0, 0, 1)],
     	k=[0, 1, 2, 3, 4, 5, 6, 7], d=1)
-
 
 def create_3darrow(shapeTitle):
     return pm.curve(name=shapeTitle, p=[
@@ -136,7 +252,6 @@ def create_3darrow(shapeTitle):
     	],
     	k=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], d=1)
 
-
 def create_cube(shapeTitle):
     return pm.curve(name=shapeTitle, p=[
     	(0.5, 0.5, -0.5), 
@@ -157,7 +272,6 @@ def create_cube(shapeTitle):
         (0.5, 0.5, 0.5)
         ],
         k=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], d=1)
-
 
 def create_COG(shapeTitle):
         return pm.curve(name=shapeTitle, p=[
@@ -448,12 +562,6 @@ def create_compass(shapeTitle):
     shapeName = pm.rename(newGroup, shapeTitle)
     return newGroup
 
-def fkikSelectEnd(*args):
-	txt_endJoint.setText(getSelected(True))
-
-def fkikSelectRoot(*args):
-	txt_rootJoint.setText(getSelected(True))
-
 def createShape(*args):
 	shapeObject = args[0].getValue()
 	shapeName = args[1].getText()
@@ -492,128 +600,50 @@ def createShape(*args):
 	#rename curve
 	#move curve to desired locaiton, if not set to origin
 
-def autocloseWindowToggle(*args):
-	windowKeepAlive = chk_keepAlive.getValue()
-	toast("Keep alive toggled")
-
-def wnd_row1():
-	pm.frameLayout(collapsable=False, label="TODO", width=450)
-	pm.columnLayout(numberOfChildren=2)
-	pm.text(label="<i>Things to work on</i>")
-	pm.text(label="-Autosnapper\n-Joint connector\n+Shape maker integration\n-Joint orient tool", align="left")
-	pm.setParent("..")
-	pm.setParent("..")
-	
-def wnd_row2():
-	global txt_jointField, chk_appendPad
-	pm.frameLayout(collapsable=True, label="Pad Object", width=450)
-
-	pm.rowLayout(numberOfColumns=3, columnWidth=[(1, 150), (2, 200), (3, 100)])
-	pm.text(label=phrases['pad_chooseObjectText'])
-	txt_jointField = pm.textField(placeholderText="Select joint", editable=False)
-	pm.button(label=phrases['pad_chooseObjectBtn'], command=pm.Callback(selectItem))
-	pm.setParent("..")
-
-	pm.rowLayout(numberOfColumns=2, columnWidth=[(1,350)])
-	pm.text(phrases['pad_append'])
-	chk_appendPad = pm.checkBox("appendPad", value=True, label="")
-	pm.setParent("..")
-
-	pm.rowLayout(numberOfColumns=3)
-	pm.text(width=150, label="")
-	pm.button(label=phrases['pad_append'], command=pm.Callback(padObject))
-	pm.text(width=150, label="")
-	pm.setParent("..")
-
-	pm.setParent("..")
-
-def wnd_row3():
-	global opt_shapeOptions, txt_shapeName, txt_shapeSuffix
-	global opt_placementOption
-	pm.frameLayout(label="Choose options:", width=450, collapsable=True)
-	
-	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
-		width=450, columnWidth=([1, 200], [2, 250]))
-	pm.text(label="Choose a shape:")
-	opt_shapeOptions = pm.optionMenu(width=100)
-	pm.menuItem(label="Circle")
-	pm.menuItem(label="Sphere")
-	pm.menuItem(label="Square")
-	pm.menuItem(label="Cube")
-	pm.menuItem(label="2D Arrow")
-	pm.menuItem(label="3D Arrow")
-	pm.menuItem(label="Round Pointer")
-	pm.menuItem(label="COG Circle")
-	pm.menuItem(label="Compass")
-	pm.setParent("..")
-	
-	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
-		width=450, columnWidth=([1, 200], [2, 250]))
-	pm.text(label=phrases['shapes_shapeName'])
-	txt_shapeName = pm.textField(placeholderText="shape")
-	pm.setParent("..")
-
-	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
-		width=450, columnWidth=([1, 200], [2, 250]))
-	pm.text(label=phrases['shapes_shapeSuffix'])
-	txt_shapeSuffix = pm.textField(placeholderText="icon")
-	pm.setParent("..")
-
-	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
-		width=450, columnWidth=([1, 200], [2, 250]))
-	pm.text(label=phrases['shapes_placedOn'])
-	opt_placementOption = pm.optionMenu(width=150)
-	pm.menuItem(label="Origin")
-	pm.menuItem(label="Currently Selected Object")
-	pm.setParent("..")
-
-	pm.rowLayout(numberOfColumns=1, columnAlign=([1, "center"]), width=450,
-		columnWidth=([1,450]))
-	pm.button(label=phrases['shapes_button'], command=pm.Callback(createShape,
-		opt_shapeOptions, txt_shapeName, txt_shapeSuffix,
-		opt_placementOption))
-	pm.setParent("..")
-
-	pm.setParent("..")
-
-def wnd_row4():
+def wnd_rowFKIK():
 	global txt_rootJoint, txt_endJoint, chk_control_create
 	global chk_control_hierarchy, chk_control_connect
 	pm.frameLayout(collapsable=True, label="FK/IK")
 	pm.rowLayout(numberOfColumns=3, width=450,
 		columnWidth=([1, 150], [2, 200], [3, 150]))
-	pm.text(label="Select the root joint:")
-	txt_rootJoint = pm.textField(placeholderText="Choose joint",
+	pm.text(label=phrases['fkik_selectRootText'])
+	txt_rootJoint = pm.textField(placeholderText=phrases['general_chooseJoint'],
 		editable=False)
-	pm.button(label="Select root", command=pm.Callback(fkikSelectRoot))
+	pm.button(label=phrases['fkik_selectRootButton'], command=pm.Callback(fkikSelectRoot))
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=3, width=450, columnWidth=([1, 150],[2, 200],
 		[3, 150]))
-	pm.text(label="Select the end joint\n(for IK creation)")
-	txt_endJoint = pm.textField(placeholderText="Choose joint",
+	pm.text(label=phrases['fkik_selectEndText'])
+	txt_endJoint = pm.textField(placeholderText=phrases['general_chooseJoint'],
 		editable=False)
-	pm.button(label="Select end joint", command=pm.Callback(fkikSelectEnd))
+	pm.button(label=phrases['fkik_selectEndButton'], command=pm.Callback(fkikSelectEnd))
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350],
 		[2, 150]))
-	pm.text(label="Create controls on respective joints?")
+	pm.text(label=phrases['fkik_createControlsText'])
 	chk_control_create = pm.checkBox("", value=True)
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350],
 		[2, 150]))
-	pm.text("Create controls in hierarchy?")
+	pm.text(phrases['fkik_createHierarchyText'])
 	chk_control_hierarchy = pm.checkBox(label="", value=True)
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350],
 		[2, 150]))
-	pm.text(label="Connect controls on respective joints?")
+	pm.text(label=phrases['fkik_connectControlsText'])
 	chk_control_connect = pm.checkBox(label="", value=True)
 	pm.setParent("..")
 	pm.setParent("..")
+
+def fkikSelectEnd(*args):
+	txt_endJoint.setText(getSelected(True))
+
+def fkikSelectRoot(*args):
+	txt_rootJoint.setText(getSelected(True))
 
 def wnd_row_default():
 	pm.frameLayout(collapsable=True, label="")
@@ -628,11 +658,11 @@ def gui():
 	pm.rowColumnLayout(numberOfRows=2, height=350, rowHeight=([1,
 		windowHeight]))
 	pm.scrollLayout(width=windowWidth)
-	wnd_row1()
-	wnd_row2()
-	wnd_row3()
-	wnd_row4()
+	wnd_rowTODO()
+	wnd_rowPad()
+	wnd_rowShapes()
+	wnd_rowFKIK()
 	pm.setParent("..")
-	chk_keepAlive = pm.checkBox("Automatically close window after operation",
+	chk_keepAlive = pm.checkBox(phrases['main_autocloseWindow'],
 		value=windowKeepAlive, changeCommand=pm.Callback(autocloseWindowToggle))
 	pm.showWindow(connector_window)
