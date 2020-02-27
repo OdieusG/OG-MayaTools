@@ -16,8 +16,9 @@ import pymel.core as pm
 import maya.cmds as cmds
 import sys
 
+backColor_gray = [.5, .5, .5]
 debugMode=False
-windowWidth = 500
+windowWidth = 700
 windowHeight=300
 buttonWidth = 150
 keepAliveCheck = ""
@@ -604,20 +605,30 @@ def wnd_rowFKIK():
 	global txt_rootJoint, txt_endJoint, chk_control_create
 	global chk_control_hierarchy, chk_control_connect
 	pm.frameLayout(collapsable=True, label="FK/IK")
-	pm.rowLayout(numberOfColumns=3, width=450,
-		columnWidth=([1, 150], [2, 200], [3, 150]))
+	pm.columnLayout(numberOfChildren=2, backgroundColor=backColor_gray)
+	wnd_rowFKIK_left()
+	wnd_rowFKIK_right()
+	pm.setParent("..")
+
+def wnd_rowFKIK_right():
+	pm.textScrollList(append=(["1", "2"]))
+	
+
+def wnd_rowFKIK_left():
+	pm.rowLayout(numberOfColumns=3, width=500,
+		columnWidth=([1, 200], [2, 150], [3, 150]))
 	pm.text(label=phrases['fkik_selectRootText'])
 	txt_rootJoint = pm.textField(placeholderText=phrases['general_chooseJoint'],
 		editable=False)
-	pm.button(label=phrases['fkik_selectRootButton'], command=pm.Callback(fkikSelectRoot))
+	pm.button(label=phrases['fkik_selectRootButton'], command=pm.Callback(fkikSelectRoot), width=100)
 	pm.setParent("..")
 
-	pm.rowLayout(numberOfColumns=3, width=450, columnWidth=([1, 150],[2, 200],
+	pm.rowLayout(numberOfColumns=3, width=500, columnWidth=([1, 200],[2, 150],
 		[3, 150]))
 	pm.text(label=phrases['fkik_selectEndText'])
 	txt_endJoint = pm.textField(placeholderText=phrases['general_chooseJoint'],
 		editable=False)
-	pm.button(label=phrases['fkik_selectEndButton'], command=pm.Callback(fkikSelectEnd))
+	pm.button(label=phrases['fkik_selectEndButton'], command=pm.Callback(fkikSelectEnd), width=100)
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350],
@@ -636,7 +647,6 @@ def wnd_rowFKIK():
 		[2, 150]))
 	pm.text(label=phrases['fkik_connectControlsText'])
 	chk_control_connect = pm.checkBox(label="", value=True)
-	pm.setParent("..")
 	pm.setParent("..")
 
 def fkikSelectEnd(*args):
