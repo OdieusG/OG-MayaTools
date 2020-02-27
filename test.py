@@ -438,7 +438,7 @@ def create_compass(shapeTitle):
 
 def fkikSelectEnd(*args):
 	txt_endJoint.setText(getSelected(True))
-
+	
 def fkikSelectRoot(*args):
 	txt_rootJoint.setText(getSelected(True))
 
@@ -491,21 +491,16 @@ def gui():
 	global opt_shapeOptions
 	wnd_connector_window = pm.window(title="Connector Window", width=windowWidth, height=windowHeight, sizeable=True)
 	pm.columnLayout(numberOfChildren=2, columnAlign="left")
-	mainTabs = pm.tabLayout(innerMarginWidth=5, innerMarginHeight=5)
-
-	tab_1 = pm.columnLayout(numberOfChildren=2)
+	
+    #1
+	pm.frameLayout(collapsable=True, label="TODO")
 	# Tab1 begin
 	pm.text(label="<i>Things to work on</i>")
 	pm.text(label="Autosnapper\nJoint connector\nShape maker integration\nJoint orient tool", align="left")
-	pm.setParent(mainTabs)
-	# Tab1 end
-
-
-	tab_2 = pm.columnLayout(width=windowWidth-10, height=windowHeight-50)
-	#Tab 2 begin
-	pm.frameLayout(collapsable=True, label="Pad Object", width=450)
-
-	pm.rowLayout(numberOfColumns=3, columnWidth=[(1, 150), (2, 200), (3, 100)])
+	pm.setParent("..")
+    #2
+    pm.frameLayout(collapsable=True, label="Pad Object", width=(windowWidth-10))
+	pm.rowLayout(numberOfColumns=3, columnWidth=[(1, 150), (2, 200), (3, 150)], columnAlign=[(3, 'right')])
 	pm.text(label="Choose an object to pad:")
 	pm.text("padObject", label="<i>nothing selected</i>")
 	pm.button(label="Choose item", command=pm.Callback(selectItem))
@@ -521,12 +516,9 @@ def gui():
 	pm.button(label="Pad this", command=pm.Callback(padObject))
 	pm.text(width=150, label="")
 	pm.setParent("..")
-
-	pm.setParent(mainTabs)
-	#Tab 2 end
-
-	tab_3 = pm.columnLayout(numberOfChildren=2, columnAlign="left")
-	pm.frameLayout(label="Choose options:", width=450)
+    pm.setParent("..")
+    #3
+    pm.frameLayout(label="Choose options:", width=450)
 	
 	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
 		width=450, columnWidth=([1, 200], [2, 250]))
@@ -569,12 +561,10 @@ def gui():
 		opt_shapeOptions, txt_shapeName, txt_shapeSuffix,
 		opt_placementOption))
 	pm.setParent("..")
-
-	pm.setParent(mainTabs)
-	#Tab 3 end
-
-	tab_4 = pm.columnLayout(numberOfChildren=1, columnAlign="left")
-	pm.rowLayout(numberOfColumns=3, width=450,
+    pm.setParent("..")
+    #4
+	pm.frameLayout(collapsable=True)
+    pm.rowLayout(numberOfColumns=3, width=450,
 		columnWidth=([1, 150], [2, 200], [3, 150]))
 	pm.text(label="Select the root joint:")
 	txt_rootJoint = pm.textField(placeholderText="Choose joint", editable=False)
@@ -601,17 +591,6 @@ def gui():
 	pm.text(label="Connect controls on respective joints?")
 	chk_control_connect = pm.checkBox(label="", value=True)
 	pm.setParent("..")
-
-	pm.setParent(mainTabs)
-
-	pm.setParent("..")
-
-	mainTabs.setTabLabel([tab_1, "TODO"])
-	mainTabs.setTabLabel([tab_2, "Snapper"])
-	mainTabs.setTabLabel([tab_3, "Shape Maker"])
-	mainTabs.setTabLabel([tab_4, "FK/IK Creator"])
-
-	
 
 	chk_keepAlive = pm.checkBox("Automatically close window", value=windowKeepAlive, changeCommand=pm.Callback(autocloseWindowToggle))
 
