@@ -692,18 +692,15 @@ def fkik_generateStuff(*args):
 	inHierarchyFlag = chk_control_hierarchy.getValue()
 	connectControlsFlag = chk_control_connect.getValue()
 	onHand = chk_createHandControl.getValue()
+	activeSelection = cmds.ls(sl=True)
 	#duplicate joint for FK
 	fk_chain = cmds.duplicate(fkik_rootJoint, name=fkik_rootJoint.replace("_bind", "_fk"), rc=True)
 	# now go through the rest and rename those
 	inc = 0
 	for fkInc in fk_chain:
-		print fkInc
 		if (inc > 0):
 			newName = fkInc.replace("_bind1", "_fk")
 			newName = newName.replace("_waste1", "_fk")
-			print "New name: " + newName
-			print "Increment: " + fkInc
-			print ""
 			pm.rename(fkInc, newName)
 		inc = inc + 1
 	# duplicate again and do IK this time
@@ -711,19 +708,50 @@ def fkik_generateStuff(*args):
 	# now go through the rest and rename those
 	inc = 0
 	for ikInc in ik_chain:
-		print ikInc
 		if (inc > 0):
 			newName = ikInc.replace("_bind1", "_ik")
 			newName = newName.replace("_waste1", "_ik")
-			print "New name: " + newName
-			print "Increment: " + ikInc
-			print ""
 			pm.rename(ikInc, newName)
 		inc = inc + 1
+	main_chain = cmds.ls(fkik_rootJoint, dag=True)
+	# get the list from FK
+	fk_chain = cmds.ls(fk_chain, dag=True)
+	#get the list from IK
+	ik_chain = cmds.ls(ik_chain, dag=True)
+	# prep array for control creation
+	arr_fk = []
+	# Parent the joints now
+	for iter in main_chain:
+		bind_joint = iter
+		fk_joint = iter.replace("_bind", "_fk")
+		fk_joint = fk_joint.replace("_waste", "_fk")
+		ik_joint = iter.replace("_bind", "_ik")
+		ik_joint = ik_joint.replace("_waste", "_ik")
+		cmds.parentConstraint(fk_joint, ik_joint, bind_joint)
+		arr_fk.append(fk_joint)
+	# check to see if the arm controls are to be made
+	if createControlFlag == True:
+		# Controls being made.
+		for controlIndex in arr_fk:
+			controlName = controlIndex.replace("_fk", "_icon")
+			# send control to joint position
+			controlTrans = cmds.xform(controlIndex, q=True, t=True, worldSpace=True)
+			controlRot = cmds.xform(controlIndex, q=True, ro=True, worldSpace=True)
+			control = create_circle(controlName)
+			cmds.xform(controlName, t=controlTrans, ro=controlRot)
+			controlPad = controlName.replace("_icon", "_pad")
+			newGroup = cmds.group(em=True, n=controlPad)
+			cmds.xform(newGroup, ro=controlRot, t=controlTrans)
+			cmds.parent(controlName, controlPad)
+			cmds.xform(controlName, ro=[0, 0, 90])
+			freezeTransform(controlName)
+	# Make IK handle
+	cmds.ikHandle(sj=fkik_rootJoint, ee=fkik_endJoint, sol="ikRPsolver", n=fkik_rootJoint + "_ikHandle")
 	
 
-def freezeTransform(jointName):
-	pm.makeIdentity(jointName, n=0, s=1, r=1, t=1, apply=True, pn=1)
+
+def freezeTransform(objectName):
+	pm.makeIdentity(objectName, n=0, s=1, r=1, t=1, apply=True, pn=1)
     
 def orient_processJoints(*args):
 	jointBeingManipulated = txt_orientJointBase.getText()
