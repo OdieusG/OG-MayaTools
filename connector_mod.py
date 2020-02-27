@@ -18,8 +18,8 @@ import sys
 
 backColor_gray = [.5, .5, .5]
 debugMode=False
-windowWidth = 700
-windowHeight=300
+windowWidth = 520
+windowHeight=350
 buttonWidth = 150
 keepAliveCheck = ""
 windowKeepAlive=True
@@ -98,29 +98,31 @@ def autocloseWindowToggle(*args):
 	windowKeepAlive = chk_keepAlive.getValue()
 
 def wnd_rowTODO():
-	pm.frameLayout(collapsable=False, label="TODO", width=450)
-	pm.columnLayout(numberOfChildren=2)
+	pm.frameLayout(collapsable=False, label="TODO", width=500)
+
+	pm.columnLayout(numberOfChildren=2, backgroundColor=backColor_gray)
 	pm.text(label="<i>Things to work on</i>")
 	pm.text(label="-Autosnapper\n-Joint connector\n+Shape maker integration\n-Joint orient tool", align="left")
 	pm.setParent("..")
+
 	pm.setParent("..")
 	
 def wnd_rowPad():
 	global txt_jointField, chk_appendPad
-	pm.frameLayout(collapsable=True, label="Pad Object", width=450)
+	pm.frameLayout(collapsable=True, label="Pad Object", width=500)
 
-	pm.rowLayout(numberOfColumns=3, columnWidth=[(1, 150), (2, 200), (3, 100)])
+	pm.rowLayout(numberOfColumns=3, columnWidth=[(1, 150), (2, 200), (3, 100)], backgroundColor=backColor_gray)
 	pm.text(label=phrases['pad_chooseObjectText'])
 	txt_jointField = pm.textField(placeholderText=phrases['general_chooseJoint'], editable=False)
 	pm.button(label=phrases['pad_chooseObjectBtn'], command=pm.Callback(selectItem))
 	pm.setParent("..")
 
-	pm.rowLayout(numberOfColumns=2, columnWidth=[(1,350)])
+	pm.rowLayout(numberOfColumns=2, columnWidth=[(1,350)], backgroundColor=backColor_gray)
 	pm.text(phrases['pad_append'])
 	chk_appendPad = pm.checkBox("appendPad", value=True, label="")
 	pm.setParent("..")
 
-	pm.rowLayout(numberOfColumns=3)
+	pm.rowLayout(numberOfColumns=3, backgroundColor=backColor_gray)
 	pm.text(width=150, label="")
 	pm.button(label=phrases['pad_append'], command=pm.Callback(padObject))
 	pm.text(width=150, label="")
@@ -150,10 +152,10 @@ def padObject(*args):
 def wnd_rowShapes():
 	global opt_shapeOptions, txt_shapeName, txt_shapeSuffix
 	global opt_placementOption
-	pm.frameLayout(label="Choose options:", width=450, collapsable=True)
+	pm.frameLayout(label="Shape Maker", width=500, collapsable=True)
 	
 	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
-		width=450, columnWidth=([1, 200], [2, 250]))
+		width=450, columnWidth=([1, 200], [2, 250]), backgroundColor=backColor_gray)
 	pm.text(label=phrases['shapes_chooseShape'])
 	opt_shapeOptions = pm.optionMenu(width=100)
 	pm.menuItem(label="Circle")
@@ -168,19 +170,19 @@ def wnd_rowShapes():
 	pm.setParent("..")
 	
 	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
-		width=450, columnWidth=([1, 200], [2, 250]))
+		width=450, columnWidth=([1, 200], [2, 250]), backgroundColor=backColor_gray)
 	pm.text(label=phrases['shapes_shapeName'])
 	txt_shapeName = pm.textField(placeholderText=phrases['shapes_defaultShapeText'])
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
-		width=450, columnWidth=([1, 200], [2, 250]))
+		width=450, columnWidth=([1, 200], [2, 250]), backgroundColor=backColor_gray)
 	pm.text(label=phrases['shapes_shapeSuffix'])
 	txt_shapeSuffix = pm.textField(placeholderText=phrases['shapes_defaultControlText'])
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
-		width=450, columnWidth=([1, 200], [2, 250]))
+		width=450, columnWidth=([1, 200], [2, 250]), backgroundColor=backColor_gray)
 	pm.text(label=phrases['shapes_placedOn'])
 	opt_placementOption = pm.optionMenu(width=150)
 	pm.menuItem(label="Origin")
@@ -188,7 +190,7 @@ def wnd_rowShapes():
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=1, columnAlign=([1, "center"]), width=450,
-		columnWidth=([1,450]))
+		columnWidth=([1,450]), backgroundColor=backColor_gray)
 	pm.button(label=phrases['shapes_button'], command=pm.Callback(createShape,
 		opt_shapeOptions, txt_shapeName, txt_shapeSuffix,
 		opt_placementOption))
@@ -605,18 +607,9 @@ def wnd_rowFKIK():
 	global txt_rootJoint, txt_endJoint, chk_control_create
 	global chk_control_hierarchy, chk_control_connect
 	pm.frameLayout(collapsable=True, label="FK/IK")
-	pm.columnLayout(numberOfChildren=2, backgroundColor=backColor_gray)
-	wnd_rowFKIK_left()
-	wnd_rowFKIK_right()
-	pm.setParent("..")
 
-def wnd_rowFKIK_right():
-	pm.textScrollList(append=(["1", "2"]))
-	
-
-def wnd_rowFKIK_left():
 	pm.rowLayout(numberOfColumns=3, width=500,
-		columnWidth=([1, 200], [2, 150], [3, 150]))
+		columnWidth=([1, 200], [2, 150], [3, 150]), backgroundColor=backColor_gray)
 	pm.text(label=phrases['fkik_selectRootText'])
 	txt_rootJoint = pm.textField(placeholderText=phrases['general_chooseJoint'],
 		editable=False)
@@ -624,7 +617,7 @@ def wnd_rowFKIK_left():
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=3, width=500, columnWidth=([1, 200],[2, 150],
-		[3, 150]))
+		[3, 150]), backgroundColor=backColor_gray)
 	pm.text(label=phrases['fkik_selectEndText'])
 	txt_endJoint = pm.textField(placeholderText=phrases['general_chooseJoint'],
 		editable=False)
@@ -632,23 +625,31 @@ def wnd_rowFKIK_left():
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350],
-		[2, 150]))
+		[2, 150]), backgroundColor=backColor_gray)
 	pm.text(label=phrases['fkik_createControlsText'])
 	chk_control_create = pm.checkBox("", value=True)
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350],
-		[2, 150]))
+		[2, 150]), backgroundColor=backColor_gray)
 	pm.text(phrases['fkik_createHierarchyText'])
 	chk_control_hierarchy = pm.checkBox(label="", value=True)
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350],
-		[2, 150]))
+		[2, 150]), backgroundColor=backColor_gray)
 	pm.text(label=phrases['fkik_connectControlsText'])
 	chk_control_connect = pm.checkBox(label="", value=True)
 	pm.setParent("..")
 
+	pm.rowLayout(numberOfColumns=3)
+	pm.text(label="test")
+	pm.text(label="text2")
+	pm.text(label="text3")
+	pm.setParent("..")
+
+	pm.setParent("..")
+	
 def fkikSelectEnd(*args):
 	txt_endJoint.setText(getSelected(True))
 
@@ -665,8 +666,7 @@ def gui():
 	global chk_keepAlive
 	wnd_connector_window = pm.window(title="Connector Window", widthHeight=(
 		[windowWidth, windowHeight]), sizeable=False)
-	pm.rowColumnLayout(numberOfRows=2, height=350, rowHeight=([1,
-		windowHeight]))
+	pm.columnLayout(numberOfChildren=2)
 	pm.scrollLayout(width=windowWidth)
 	wnd_rowTODO()
 	wnd_rowPad()
