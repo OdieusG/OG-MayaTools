@@ -85,7 +85,9 @@ def wnd_rowTODO():
     todoList = todoList + "+Joint connector\n"
     todoList = todoList + "+Shape maker integration\n"
     todoList = todoList + "+Joint orient tool\n"
-    todoList = todoList + "+FK/IK Joint Automatic Creation Tool"
+    todoList = todoList + "+FK/IK Joint Automatic Creation Tool\n"
+    todoList += "Flying hand syndrome with FK/IK\n"
+    todoList = todoList + "Automatic SDK with FK/IK"
     pm.text(label=todoList, align="left")
     pm.setParent("..")
 
@@ -823,10 +825,10 @@ def fkik_generateStuff(*args):
             pm.parent(iconName, iconPad)
             # Translate the icon in the Y direction
             if handIconDirection == "Left":
-                iconDistance = handIconDistance
+                iconDistance = float(handIconDistance)
             else:
-                iconDistance = handIconDistance * -1
-            pm.xform(iconName, t=[0, iconDistance, 0])
+                iconDistance = float(handIconDistance) * -1
+            pm.xform(iconName, t=[float(0), float(iconDistance), float(0)])
             freezeTransform(iconName)
             # Snap pivot to hand base
             handBaseTra = pm.xform(handBind, q=True, t=True, worldSpace=True)
@@ -842,7 +844,7 @@ def fkik_generateStuff(*args):
 def snapToArray(objectName, snapArray):
     print "Snapping " + objectName + " to " 
     print str(snapArray)
-    pm.move(snapArray[0], snapArray[1], snapArray[2], objectName + ".scalePivot", objectName + ".rotatePivot", rpr=1)
+    pm.move(float(snapArray[0]), float(snapArray[1]), float(snapArray[2]), objectName + ".scalePivot", objectName + ".rotatePivot", rpr=1)
 
 def freezeTransform(objectName):
     pm.makeIdentity(objectName, n=0, s=1, r=1, t=1, apply=True, pn=1)
