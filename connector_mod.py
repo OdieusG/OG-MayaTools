@@ -44,7 +44,7 @@ phrases =  {
     "fkik_selectRootButton":"Select root",
     "fkik_selectEndButton":"Select end",
     "fkik_selectHandButton":"Select hand Joint",
-    "fkik_selectHandControlLocation":"Select secondary hand position (waste)",
+    "fkik_selectHandControlLocation":"Select secondary\nhand position (waste)",
     "fkik_createControl":"Create control on hand?",
     "fkik_createControlsText":"Create controls on respective joints?",
     "fkik_createHierarchyText":"Create controls in hierarchy?",
@@ -84,8 +84,8 @@ def wnd_rowTODO():
     todoList = "+Autosnapper\n"
     todoList = todoList + "+Joint connector\n"
     todoList = todoList + "+Shape maker integration\n"
-    todoList = todoList + "-Joint orient tool\n"
-    todoList = todoList + ""
+    todoList = todoList + "+Joint orient tool\n"
+    todoList = todoList + "+FK/IK Joint Automatic Creation Tool"
     pm.text(label=todoList, align="left")
     pm.setParent("..")
 
@@ -242,8 +242,8 @@ def create_3darrow(shapeTitle):
         ],
         k=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], d=1)
 
-def create_cube(shapeTitle):
-    return pm.curve(name=shapeTitle, p=[
+def create_cube(shapeTitle, newScale=1):
+    newCurve = pm.curve(name=shapeTitle, p=[
         (0.5, 0.5, -0.5), 
         (0.5, 0.5, 0.5),
         (0.5, -0.5, 0.5), 
@@ -262,6 +262,9 @@ def create_cube(shapeTitle):
         (0.5, 0.5, 0.5)
         ],
         k=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], d=1)
+    newCurve =pm.xform(shapeTitle, s=[float(newScale), float(newScale), float(newScale)])
+    print "Rescaling " + str(newCurve)
+    return newCurve
 
 def create_COG(shapeTitle):
         return pm.curve(name=shapeTitle, p=[
@@ -589,11 +592,12 @@ def createShape(*args):
 
 def wnd_rowFKIK():
     global txt_rootJoint, txt_endJoint, txt_handJoint, txt_handDrop
-    global txt_handIconDist, txt_handIconRadius
+    global txt_handIconDist, txt_handIconRadius, txt_iconScale
     global chk_control_create, chk_control_hierarchy, chk_control_connect
     global chk_createHandControl, chk_arm_control
     global btn_selectHandControl, btn_selectWasteControl
-    global sld_handIconDistance, sld_handIconRadius
+    global sld_handIconDistance, sld_handIconRadius, sld_iconScale
+    global opt_handOrient
     pm.frameLayout(collapsable=True, label="FK/IK")
 
     pm.rowLayout(numberOfColumns=3, width=500,
@@ -622,6 +626,13 @@ def wnd_rowFKIK():
         offCommand=pm.Callback(toggleJointCreation, False))
     pm.setParent("..")
 
+    pm.rowLayout(numberOfColumns=3, columnWidth=([1, 150], [2, 200],
+        [3, 150]))
+    pm.text(label="Control Scale")
+    sld_iconScale = pm.floatSlider(min=0, max=2, value=0.5, width=200, changeCommand=pm.Callback(scaleSliderChanged))
+    txt_iconScale = pm.textField(editable=True, changeCommand=pm.Callback(txt_iconScaleChanged), text=sld_iconScale.getValue())
+    pm.setParent("..")
+    
     pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350],
         [2, 150]))
     pm.text(label=phrases['fkik_connectControlsText'])
@@ -660,6 +671,13 @@ def wnd_rowFKIK():
         command=pm.Callback(fkikSelectHandIconPoint))
     pm.setParent("..")
 
+    pm.rowLayout(numberOfColumns=2, columnWidth=([1, 350], [2, 150]))
+    pm.text(label="Left or right?")
+    opt_handOrient = pm.optionMenu(width=150)
+    pm.menuItem(label="Left")
+    pm.menuItem(label="Right")
+    pm.setParent("..")
+
     pm.rowLayout(numberOfColumns=3, columnWidth=([1, 150], [2, 200],
         [3, 150]))
     pm.text(label="Hand icon distance")
@@ -670,7 +688,7 @@ def wnd_rowFKIK():
     pm.rowLayout(numberOfColumns=3, columnWidth=([1, 150], [2, 200],
         [3, 150]))
     pm.text(label="Hand icon radius")
-    sld_handIconRadius = pm.floatSlider(min=0, max=5, value=1.0, width=200, changeCommand=pm.Callback(sliderRadiusChanged))
+    sld_handIconRadius = pm.floatSlider(min=0, max=5.0, value=1.0, width=200, changeCommand=pm.Callback(sliderRadiusChanged))
     txt_handIconRadius = pm.textField(editable=True, changeCommand=pm.Callback(txt_handRadiusChanged), text=sld_handIconRadius.getValue())
     pm.setParent("..")
 
@@ -687,8 +705,10 @@ def fkik_generateStuff(*args):
     fkik_endJoint = txt_endJoint.getText()
     handIconDistance = txt_handIconDist.getText()
     handIconRadius = txt_handIconRadius.getText()
+    iconScale = txt_iconScale.getText()
     handBind = txt_handJoint.getText()
     handDrop = txt_handDrop.getText();
+    handIconDirection = opt_handOrient.getValue()
     createControlFlag = chk_control_create.getValue()
     inHierarchyFlag = True
     connectControlsFlag = chk_control_connect.getValue()
@@ -741,7 +761,7 @@ def fkik_generateStuff(*args):
             # send control to joint position
             controlTrans = cmds.xform(controlIndex, q=True, t=True, worldSpace=True)
             controlRot = cmds.xform(controlIndex, q=True, ro=True, worldSpace=True)
-            control = create_circle(controlName)
+            control = create_circle(controlName, iconScale)
             freezeTransform(control)
             cmds.xform(controlName, t=controlTrans, ro=controlRot)
             controlPad = controlName.replace("_icon", "_pad")
@@ -758,15 +778,17 @@ def fkik_generateStuff(*args):
     if createArmControl == True:
         # Make arm control
         armControl = fkik_rootJoint.replace("_bind", "_arm_icon")
-        armIcon = create_cube(armControl)
-        freezeTransform(armIcon)
+        armIcon = create_cube(armControl, iconScale)
+        freezeTransform(armControl)
         # Snap the icon to the end joint
-        cmds.xform(armControl, ro=cmds.xform(fkik_endJoint, q=True, ro=True, worldSpace=True))
-        cmds.xform(armControl, t=cmds.xform(fkik_endJoint, q=True, t=True, worldSpace=True))
         armPad = cmds.group(em=True, n=fkik_rootJoint.replace("_bind", "_arm_pad"))
-        cmds.xform(armPad, ro=cmds.xform(fkik_endJoint, q=True, ro=True, worldSpace=True))
-        cmds.xform(armPad, t=cmds.xform(fkik_endJoint, q=True, t=True, worldSpace=True))
-        cmds.parent(armControl, armPad)
+        pivotTrans=cmds.xform(fkik_endJoint, q=True, t=True, worldSpace=True)
+        pivotRot=cmds.xform(fkik_endJoint, q=True, ro=True, worldSpace=True)
+        pm.xform(armControl, ro=pivotRot)
+        pm.xform(armControl, t=pivotTrans)
+        pm.xform(armPad, ro=pivotRot)
+        pm.xform(armPad, t=pivotTrans)
+        pm.parent(armControl, armPad)
     #Connect controls
     if connectControlsFlag == True:
         for iter in arr_fk:
@@ -800,7 +822,11 @@ def fkik_generateStuff(*args):
             pm.xform(icon_name, ro=handRot)
             pm.parent(iconName, iconPad)
             # Translate the icon in the Y direction
-            pm.xform(iconName, t=[0, handIconDistance, 0])
+            if handIconDirection == "Left":
+                iconDistance = handIconDistance
+            else:
+                iconDistance = handIconDistance * -1
+            pm.xform(iconName, t=[0, iconDistance, 0])
             freezeTransform(iconName)
             # Snap pivot to hand base
             handBaseTra = pm.xform(handBind, q=True, t=True, worldSpace=True)
@@ -826,6 +852,12 @@ def orient_processJoints(*args):
     freezeTransform(jointBeingManipulated)
     pm.joint(jointBeingManipulated, zso=1, ch=1, e=1, oj='xyz', secondaryAxisOrient='yup')
 
+def scaleSliderChanged(*args):
+    txt_iconScale.setText(sld_iconScale.getValue())
+
+def txt_iconScaleChanged(*args):
+    sld_iconScale.setValue(float(txt_iconScale.getText()))   
+
 def distanceSliderChanged(*args):
     txt_handIconDist.setText(sld_handIconDistance.getValue())
 
@@ -839,6 +871,8 @@ def txt_handRadiusChanged(*args):
     sld_handIconRadius.setValue(float(txt_handIconRadius.getText()))
 
 def toggleJointCreation(*args):
+    sld_iconScale.setEnable(chk_control_create.getValue())
+    txt_iconScale.setEnable(chk_control_create.getValue())
     chk_control_connect.setEnable(chk_control_create.getValue())
     chk_arm_control.setEnable(chk_control_create.getValue())
     chk_createHandControl.setValue(chk_control_create.getValue())
