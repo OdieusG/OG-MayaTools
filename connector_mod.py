@@ -21,7 +21,7 @@ windowWidth = 520
 windowHeight=350
 buttonWidth = 150
 keepAliveCheck = ""
-windowKeepAlive=True
+windowKeepAlive=False
 __green__ = 14
 __red__ = 13
 __blue__ = 6
@@ -64,9 +64,10 @@ def getSelected(niceName=False, dagOption=True):
 		return selectedItem
 
 def closeWindow():
-	global connector_window, windowKeepAlive
-	if windowKeepAlive==True:
-		pm.deleteUI(connector_window)
+	if windowKeepAlive == True:
+		pm.deleteUI(wnd_connector_window)
+	else:
+		return
 
 def selectItem(*args):
 	txt_jointField.setText(getSelected(True))
@@ -583,10 +584,7 @@ def createShape(*args):
 	else:
 		print("Shape unidentified - " + str(shapeName))
 		return
-
-
-	#rename curve
-	#move curve to desired locaiton, if not set to origin
+	closeWindow()
 
 def wnd_rowFKIK():
 	global txt_rootJoint, txt_endJoint, txt_handJoint
@@ -622,11 +620,11 @@ def wnd_rowFKIK():
 		offCommand=pm.Callback(toggleJointCreation, False))
 	pm.setParent("..")
 
-	pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350],
-		[2, 150]))
-	pm.text(phrases['fkik_createHierarchyText'])
-	chk_control_hierarchy = pm.checkBox(label="", value=True)
-	pm.setParent("..")
+	# pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350],
+	# 	[2, 150]))
+	# pm.text(phrases['fkik_createHierarchyText'])
+	# chk_control_hierarchy = pm.checkBox(label="", value=True)
+	# pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350],
 		[2, 150]))
@@ -670,7 +668,7 @@ def fkik_generateStuff(*args):
 	fkik_endJoint = txt_endJoint.getText()
 	handJoint = txt_handJoint.getText()
 	createControlFlag = chk_control_create.getValue()
-	inHierarchyFlag = chk_control_hierarchy.getValue()
+	inHierarchyFlag = True
 	connectControlsFlag = chk_control_connect.getValue()
 	createArmControl = chk_arm_control.getValue()
 	onHand = chk_createHandControl.getValue()
@@ -736,6 +734,7 @@ def fkik_generateStuff(*args):
 		# Make arm control
 		armControl = fkik_rootJoint.replace("_bind", "_arm_icon")
 		armIcon = create_cube(armControl)
+		freezeTransform(armIcon)
 		# Snap the icon to the end joint
 		cmds.xform(armControl, ro=cmds.xform(fkik_endJoint, q=True, ro=True, worldSpace=True))
 		cmds.xform(armControl, t=cmds.xform(fkik_endJoint, q=True, t=True, worldSpace=True))
@@ -746,12 +745,21 @@ def fkik_generateStuff(*args):
 	#Connect controls
 	if connectControlsFlag == True:
 		for iter in arr_fk:
-			print "Parenting " + iter + " and " + iter.replace("_fk", "_icon")
-			cmds.parentConstraint(iter.replace("_fk", "_icon"), iter)
+			fk_joint = iter
+			icon_name = iter.replace("_fk", "_icon")
+			cmds.parentConstraint(icon_name, iter)
 		if createArmControl == True:
 			# Move the IK to the icon
 			cmds.parent(fkik_rootJoint + "_ikHandle", armControl)
-			
+	if inHierarchyFlag == True:
+		iter=0
+		while iter < len(arr_fk)-1:
+			# Iterate through fk_chain while replacing text
+			parentIcon = arr_fk[iter].replace("_fk", "_icon")
+			childPad = arr_fk[iter+1].replace("_fk", "_pad")
+			cmds.parent(childPad, parentIcon)
+			iter = iter + 1
+
 
 def freezeTransform(objectName):
 	pm.makeIdentity(objectName, n=0, s=1, r=1, t=1, apply=True, pn=1)
@@ -784,8 +792,8 @@ def orient_selectJoint(*args):
 	txt_orientJointBase.setText(getSelected(True))
 
 def btn_closeWindow(*args):
-	global chk_keepAlive
-	chk_keepAlive.setValue=False
+	global windowKeepAlive
+	windowKeepAlive=True
 	closeWindow()
 
 def wnd_jointOrient():
@@ -833,7 +841,7 @@ def gui():
 	pm.columnLayout(numberOfChildren=3)
 	chk_keepAlive = pm.checkBox(phrases['main_autocloseWindow'],
 		value=windowKeepAlive,
-		changeCommand=pm.Callback(autocloseWindowToggle))
+		changeCommand=pm.Callback(autocloseWindowToggle), enable=False)
 
 	pm.scrollLayout(width=windowWidth, height=windowHeight-50)
 	wnd_rowTODO()
@@ -852,4 +860,4 @@ def gui():
 
 	wnd_connector_window.setSizeable(False)
 
-	pm.showWindow(connector_window)
+	pm.showWindow(wnd_connector_window)
