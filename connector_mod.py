@@ -44,6 +44,7 @@ phrases =  {
 	"fkik_selectRootButton":"Select root",
 	"fkik_selectEndButton":"Select end",
 	"fkik_selectHandButton":"Select hand Joint",
+	"fkik_selectHandControlLocation":"Select secondary hand position (waste)",
 	"fkik_createControl":"Create control on hand?",
 	"fkik_createControlsText":"Create controls on respective joints?",
 	"fkik_createHierarchyText":"Create controls in hierarchy?",
@@ -587,10 +588,10 @@ def createShape(*args):
 	closeWindow()
 
 def wnd_rowFKIK():
-	global txt_rootJoint, txt_endJoint, txt_handJoint
+	global txt_rootJoint, txt_endJoint, txt_handJoint, txt_handDrop
 	global chk_control_create, chk_control_hierarchy, chk_control_connect
 	global chk_createHandControl, chk_arm_control
-	global btn_selectHandControl
+	global btn_selectHandControl, btn_selectWasteControl
 	global fkik_innerFrame
 	pm.frameLayout(collapsable=True, label="FK/IK")
 
@@ -655,6 +656,15 @@ def wnd_rowFKIK():
 		command=pm.Callback(fkikSelectHand))
 	pm.setParent("..")
 
+	pm.rowLayout(numberOfColumns=3, columnWidth=([1, 200], [2, 150],
+		[3, 150]))
+	pm.text(label="Hand waste:")
+	txt_handDrop = pm.textField(
+		placeholderText=phrases['general_chooseJoint'], editable=False)
+	btn_selectWasteControl = pm.button(label=phrases['fkik_selectHandControlLocation'],
+		command=pm.Callback(fkikSelectHandIconPoint))
+	pm.setParent("..")
+
 	pm.setParent("..")
 
 	pm.rowLayout(numberOfColumns=3, columnWidth=([1, 150], [3, 150]))
@@ -700,6 +710,7 @@ def fkik_generateStuff(*args):
 	fk_chain = cmds.ls(fk_chain, dag=True)
 	#get the list from IK
 	ik_chain = cmds.ls(ik_chain, dag=True)
+	arr_constraint = []
 	# Parent the joints now
 	for iter in main_chain:
 		bind_joint = iter
@@ -707,7 +718,8 @@ def fkik_generateStuff(*args):
 		fk_joint = fk_joint.replace("_waste", "_fk")
 		ik_joint = iter.replace("_bind", "_ik")
 		if iter.count("_waste") == 0:
-			cmds.parentConstraint(fk_joint, ik_joint, bind_joint)
+			newConst = cmds.parentConstraint(fk_joint, ik_joint, bind_joint)
+			arr_constraint.append(newConst)
 		arr_fk.append(fk_joint)
 	# check to see if the arm controls are to be made
 	if createControlFlag == True:
@@ -718,6 +730,7 @@ def fkik_generateStuff(*args):
 			controlTrans = cmds.xform(controlIndex, q=True, t=True, worldSpace=True)
 			controlRot = cmds.xform(controlIndex, q=True, ro=True, worldSpace=True)
 			control = create_circle(controlName)
+			freezeTransform(control)
 			cmds.xform(controlName, t=controlTrans, ro=controlRot)
 			controlPad = controlName.replace("_icon", "_pad")
 			newGroup = cmds.group(em=True, n=controlPad)
@@ -759,6 +772,10 @@ def fkik_generateStuff(*args):
 			childPad = arr_fk[iter+1].replace("_fk", "_pad")
 			cmds.parent(childPad, parentIcon)
 			iter = iter + 1
+		if onHand == True:
+			# Create circle over waste
+			handControl = create_circle("hand_icon")
+
 
 
 def freezeTransform(objectName):
@@ -778,6 +795,7 @@ def toggleJointCreation(*args):
 
 def toggleHandConnection(*args):
 	btn_selectHandControl.setEnable(chk_createHandControl.getValue())
+	btn_selectWasteControl.setEnable(chk_createHandControl.getValue())
 
 def fkikSelectEnd(*args):
 	txt_endJoint.setText(getSelected(True))
@@ -787,6 +805,9 @@ def fkikSelectRoot(*args):
 
 def fkikSelectHand(*args):
 	txt_handJoint.setText(getSelected(True))
+
+def fkikSelectHandIconPoint(*args):
+	txt_handDrop.setText(getSelected(True))
 
 def orient_selectJoint(*args):
 	txt_orientJointBase.setText(getSelected(True))
