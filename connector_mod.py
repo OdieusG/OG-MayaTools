@@ -17,7 +17,6 @@ import maya.cmds as cmds
 import sys
 
 backColor_gray = [.5, .5, .5]
-debugMode=False
 windowWidth = 520
 windowHeight=350
 buttonWidth = 150
@@ -27,31 +26,7 @@ __green__ = 14
 __red__ = 13
 __blue__ = 6
 
-if debugMode == True:
-	phrases =  {
-	"general_chooseJoint":"",
-	"pad_chooseObjectText":"",
-	"pad_chooseObjectBtn":"",
-	"pad_append":"",
-	"pad_button":"",
-	"shapes_defaultShapeText":"",
-	"shapes_defaultControlText":"",
-	"shapes_chooseShape":"",
-	"shapes_shapeName":"",
-	"shapes_shapeSuffix":"",
-	"shapes_placedOn":"",
-	"shapes_button":"",
-	"fkik_selectRootText":"",
-	"fkik_selectEndText":"",
-	"fkik_selectRootButton":"",
-	"fkik_selectEndButton":"",
-	"fkik_createControlsText":"",
-	"fkik_createHierarchyText":"",
-	"fkik_connectControlsText":"",
-	"main_autocloseWindow":"",
-	}
-else:
-	phrases =  {
+phrases =  {
 	"general_chooseJoint":"Choose joint",
 	"pad_chooseObjectText":"Choose an object to pad",
 	"pad_chooseObjectBtn":"Choose Item",
@@ -75,7 +50,7 @@ else:
 	"fkik_connectControlsText":"Connect controls on respective joints?",
 	"main_autocloseWindow":"Automatically close window after operation",
 	"fkik_makeArmControl":"Create arm control at IK handle",
-	}
+}
 
 
 def toast(message):
