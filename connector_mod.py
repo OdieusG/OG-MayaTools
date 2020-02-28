@@ -74,6 +74,7 @@ else:
 	"fkik_createHierarchyText":"Create controls in hierarchy?",
 	"fkik_connectControlsText":"Connect controls on respective joints?",
 	"main_autocloseWindow":"Automatically close window after operation",
+	"fkik_makeArmControl":"Create arm control at IK handle",
 	}
 
 
@@ -615,7 +616,7 @@ def createShape(*args):
 def wnd_rowFKIK():
 	global txt_rootJoint, txt_endJoint, txt_handJoint
 	global chk_control_create, chk_control_hierarchy, chk_control_connect
-	global chk_createHandControl
+	global chk_createHandControl, chk_arm_control
 	global btn_selectHandControl
 	global fkik_innerFrame
 	pm.frameLayout(collapsable=True, label="FK/IK")
@@ -658,6 +659,12 @@ def wnd_rowFKIK():
 	chk_control_connect = pm.checkBox(label="", value=True)
 	pm.setParent("..")
 
+	pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350],
+		[2, 150]))
+	pm.text(label=phrases['fkik_makeArmControl'])
+	chk_arm_control = pm.checkBox(label="", value=True)
+	pm.setParent("..")
+
 	fkik_innerFrame = pm.frameLayout(label="Hand Connection", collapsable=True) # Embedded frame
 
 	pm.rowLayout(numberOfColumns=2, columnWidth=([1, 350], [2, 150]))
@@ -684,13 +691,13 @@ def wnd_rowFKIK():
 	pm.setParent("..")
 
 def fkik_generateStuff(*args):
-	global chk_control_connect, chk_control_create, chk_control_hierarchy, chk_createHandControl
 	fkik_rootJoint = txt_rootJoint.getText()
 	fkik_endJoint = txt_endJoint.getText()
 	handJoint = txt_handJoint.getText()
 	createControlFlag = chk_control_create.getValue()
 	inHierarchyFlag = chk_control_hierarchy.getValue()
 	connectControlsFlag = chk_control_connect.getValue()
+	createArmControl = chk_arm_control.getValue()
 	onHand = chk_createHandControl.getValue()
 	activeSelection = cmds.ls(sl=True)
 	#duplicate joint for FK
@@ -713,21 +720,21 @@ def fkik_generateStuff(*args):
 			newName = newName.replace("_waste1", "_ik")
 			pm.rename(ikInc, newName)
 		inc = inc + 1
+	# prep array for control creation
+	arr_fk = []
 	main_chain = cmds.ls(fkik_rootJoint, dag=True)
 	# get the list from FK
 	fk_chain = cmds.ls(fk_chain, dag=True)
 	#get the list from IK
 	ik_chain = cmds.ls(ik_chain, dag=True)
-	# prep array for control creation
-	arr_fk = []
 	# Parent the joints now
 	for iter in main_chain:
 		bind_joint = iter
 		fk_joint = iter.replace("_bind", "_fk")
 		fk_joint = fk_joint.replace("_waste", "_fk")
 		ik_joint = iter.replace("_bind", "_ik")
-		ik_joint = ik_joint.replace("_waste", "_ik")
-		cmds.parentConstraint(fk_joint, ik_joint, bind_joint)
+		if iter.count("_waste") == 0:
+			cmds.parentConstraint(fk_joint, ik_joint, bind_joint)
 		arr_fk.append(fk_joint)
 	# check to see if the arm controls are to be made
 	if createControlFlag == True:
@@ -746,9 +753,30 @@ def fkik_generateStuff(*args):
 			cmds.xform(controlName, ro=[0, 0, 90])
 			freezeTransform(controlName)
 	# Make IK handle
-	cmds.ikHandle(sj=fkik_rootJoint, ee=fkik_endJoint, sol="ikRPsolver", n=fkik_rootJoint + "_ikHandle")
-	
-
+	ikBaseJoint = fkik_rootJoint.replace("_bind", "_ik")
+	ikEndJoint = fkik_endJoint.replace("_bind", "_ik")
+	ikEndJoint = ikEndJoint.replace("_waste", "_ik")
+	armIKHandle = cmds.ikHandle(sj=ikBaseJoint, ee=ikEndJoint, sol="ikRPsolver", n=fkik_rootJoint + "_ikHandle")
+	if createArmControl == True:
+		# Make arm control
+		armControl = fkik_rootJoint.replace("_bind", "_arm_icon")
+		armIcon = create_cube(armControl)
+		# Snap the icon to the end joint
+		cmds.xform(armControl, ro=cmds.xform(fkik_endJoint, q=True, ro=True, worldSpace=True))
+		cmds.xform(armControl, t=cmds.xform(fkik_endJoint, q=True, t=True, worldSpace=True))
+		armPad = cmds.group(em=True, n=fkik_rootJoint.replace("_bind", "_arm_pad"))
+		cmds.xform(armPad, ro=cmds.xform(fkik_endJoint, q=True, ro=True, worldSpace=True))
+		cmds.xform(armPad, t=cmds.xform(fkik_endJoint, q=True, t=True, worldSpace=True))
+		cmds.parent(armControl, armPad)
+	#Connect controls
+	if connectControlsFlag == True:
+		for iter in arr_fk:
+			print "Parenting " + iter + " and " + iter.replace("_fk", "_icon")
+			cmds.parentConstraint(iter.replace("_fk", "_icon"), iter)
+		if createArmControl == True:
+			# Move the IK to the icon
+			cmds.parent(fkik_rootJoint + "_ikHandle", armControl)
+			
 
 def freezeTransform(objectName):
 	pm.makeIdentity(objectName, n=0, s=1, r=1, t=1, apply=True, pn=1)
@@ -761,6 +789,7 @@ def orient_processJoints(*args):
 def toggleJointCreation(*args):
 	chk_control_hierarchy.setEnable(chk_control_create.getValue())
 	chk_control_connect.setEnable(chk_control_create.getValue())
+	chk_arm_control.setEnable(chk_control_create.getValue())
 	fkik_innerFrame.setEnable(chk_control_create.getValue())
 
 
