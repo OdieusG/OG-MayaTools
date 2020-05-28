@@ -8,5 +8,5 @@ Gabriel Perro
 import TAScript as mainScript
 reload(mainscript)
 '''
-
-print "testing"
+function gui():
+	print "testing"
