@@ -40,9 +40,6 @@ def renameJoints(*args):
 		
 
 
-def fkikJoints(*args):
-	print "FK/IK conversion for limbs"
-
 def gui():
 	global orient_option, txtName, txtBaseSuffix, txtFinalSuffix
 	TAWindow = pm.window(title="Joint Renamer", width=300, height=300)
@@ -79,13 +76,5 @@ def gui():
 	pm.setParent("..")
 
 	pm.setParent("..") # Frame layout 1 end
-
-	# Frame layout 2 begin
-	pm.frameLayout(collapsable=True, label="FK/IK Conversion")
-	pm.rowLayout(numberOfColumns=2)
-	pm.button(label="Convert")
-	pm.setParent("..")
-
-	pm.setParent("..") # Frame layout 2 end
 
 	TAWindow.show()
