@@ -57,6 +57,9 @@ phrases =  {
 def toast(message):
     cmds.headsUpMessage(message)
 
+def sp():
+    pm.setParent("..")
+
 def getSelected(niceName=False, dagOption=True):
     selectedItem = cmds.ls(sl=True, dag=dagOption)
     if niceName == True:
@@ -702,6 +705,8 @@ def wnd_rowFKIK():
     pm.text(label="")
     pm.setParent("..")
 
+    pm.setParent("..")
+
 def fkik_generateStuff(*args):
     fkik_rootJoint = txt_rootJoint.getText()
     fkik_endJoint = txt_endJoint.getText()
@@ -952,22 +957,46 @@ def wnd_row_default():
 def gui():
     global wnd_connector_window, windowKeepAlive
     global chk_keepAlive
-    wnd_connector_window = pm.window(title="Connector Window", widthHeight=(
-        [windowWidth, windowHeight]), sizeable=True)
 
-    pm.columnLayout(numberOfChildren=3)
-    chk_keepAlive = pm.checkBox(phrases['main_autocloseWindow'],
-        value=windowKeepAlive,
-        changeCommand=pm.Callback(autocloseWindowToggle), enable=False)
+    if pm.window('connectorWindow', exists=1) :
+        pm.deleteUI('connectorWindow')
+    wnd_connector_window = pm.window("connectorWindow", title="Connector Window", widthHeight=(
+        [windowWidth, windowHeight]), sizeable=True, resizeToFitChildren=True)
+    pm.frameLayout('Connector Mod', width=windowWidth, height=windowHeight)
 
-    pm.scrollLayout(width=windowWidth, height=windowHeight-50)
-    wnd_rowTODO()
-    wnd_rowPad()
-    wnd_rowShapes()
-    wnd_rowFKIK()
-    wnd_jointOrient()
+    pm.tabLayout('tabList')
+    
+    tab_Todo = pm.columnLayout('TODOList', h=200, w=200)
+    wnd_rowTODO();
     pm.setParent("..")
 
+    tab_Quicks = pm.columnLayout('QuickLinks', h=200, w=200)
+    wnd_rowPad()
+    wnd_rowShapes()
+    pm.setParent("..")
+
+    tab_FKIK = pm.columnLayout('FKIK', h=200, w=200)
+    wnd_rowFKIK()
+    pm.setParent("..")
+
+    '''tab_Cloth = pm.columnLayout('Cloth', h=200, w=200)
+    pm.text(label="In the works")
+    pm.setParent("..")'''
+
+    tabHair = pm.columnLayout('Hair', h=200, w=200)
+    pm.text(label="In the works")
+    pm.setParent("..")
+
+    # back to main layout
+    pm.setParent("..")
+    # Lay out the tab list
+    pm.tabLayout('tabList', edit=1, tabLabel=[
+        (tab_Todo, "TODO"), 
+        (tab_Quicks, "Quick Creates"), 
+        (tab_FKIK, "FKIK"), 
+        #(tab_Cloth, "Cloth Deformers"),
+        (tabHair, "Hair Deformers")
+        ])
     pm.setParent("..")
 
     pm.rowLayout(numberOfColumns=1)
@@ -975,6 +1004,7 @@ def gui():
         command=pm.Callback(btn_closeWindow), height=30)
     pm.setParent("..")
 
+    
     wnd_connector_window.setSizeable(False)
 
     pm.showWindow(wnd_connector_window)
