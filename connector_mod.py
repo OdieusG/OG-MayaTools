@@ -698,7 +698,7 @@ def wnd_rowFKIK():
 
     pm.rowLayout(numberOfColumns=3, columnWidth=([1, 150], [3, 150]))
     pm.text(label="")
-    pm.button(label="Generate", width=150, command=pm.Callback(fkik_generateStuff))
+    pm.button(label="Generate Hand", width=150, command=pm.Callback(fkik_generateStuff))
     pm.text(label="")
     pm.setParent("..")
 
