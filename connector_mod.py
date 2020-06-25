@@ -15,6 +15,8 @@ Components:
 import pymel.core as pm
 import maya.cmds as cmds
 import sys
+import os.path
+import time
 
 backColor_gray = [.5, .5, .5]
 windowWidth = 520
@@ -25,6 +27,8 @@ windowKeepAlive=False
 __green__ = 14
 __red__ = 13
 __blue__ = 6
+optionAutoclose = True
+scriptPath = os.path.dirname(__file__)
 
 phrases =  {
     "general_chooseJoint":"Choose joint",
@@ -53,6 +57,22 @@ phrases =  {
     "fkik_makeArmControl":"Create arm control at IK handle",
 }
 
+def initOptions():
+    f = open(scriptPath + "/options.txt")
+    # file is pipe delimited for readibility
+    #outputFile = f.read()
+    #print(f, "rt")
+    #f.close()
+
+def saveOptions(*args):
+    #f = open(scriptPath + "/options.txt", "wt")
+
+    print 
+    #outputstring
+    outputString = str(optionAutoclose)
+    outputString = "|" + outputString + str(int(time.time()))
+    #f.write(outputString)
+    #f.close()
 
 def toast(message):
     cmds.headsUpMessage(message)
@@ -979,13 +999,19 @@ def gui():
     wnd_rowFKIK()
     pm.setParent("..")
 
-    '''tab_Cloth = pm.columnLayout('Cloth', h=200, w=200)
-    pm.text(label="In the works")
-    pm.setParent("..")'''
-
-    tabHair = pm.columnLayout('Hair', h=200, w=200)
+    tab_Cloth = pm.columnLayout('Cloth', h=200, w=200)
     pm.text(label="In the works")
     pm.setParent("..")
+
+    tabHair = pm.columnLayout('Hair', h=200, w=200)
+    pm.button(label="Create Joints")
+    pm.button(label="Make Curve On Newly Created Joints")
+    pm.text(label="In the works")
+    pm.setParent("..")
+
+    tabOptions = pm.columnLayout('Options')
+    pm.checkBox(label="Automatically Close Window On Creation")
+    pm.button(label="Save Options", command=pm.Callback(saveOptions))
 
     # back to main layout
     pm.setParent("..")
@@ -994,8 +1020,9 @@ def gui():
         (tab_Todo, "TODO"), 
         (tab_Quicks, "Quick Creates"), 
         (tab_FKIK, "FKIK"), 
-        #(tab_Cloth, "Cloth Deformers"),
-        (tabHair, "Hair Deformers")
+        (tab_Cloth, "Cloth Deformers"),
+        (tabHair, "Hair Deformers"),
+        (tabOptions, "Options")
         ])
     pm.setParent("..")
 
