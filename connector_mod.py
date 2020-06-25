@@ -65,14 +65,14 @@ def initOptions():
     #f.close()
 
 def saveOptions(*args):
-    #f = open(scriptPath + "/options.txt", "wt")
+    f = open(scriptPath + "/options.txt", "wt")
 
     print 
     #outputstring
     outputString = str(optionAutoclose)
-    outputString = "|" + outputString + str(int(time.time()))
-    #f.write(outputString)
-    #f.close()
+    outputString = outputString + "|" +  str(int(time.time()))
+    f.write(outputString)
+    f.close()
 
 def toast(message):
     cmds.headsUpMessage(message)
