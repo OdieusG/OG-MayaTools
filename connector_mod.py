@@ -16,6 +16,7 @@ import pymel.core as pm
 import maya.cmds as cmds
 import sys
 import os.path
+from os import path
 import time
 
 backColor_gray = [.5, .5, .5]
@@ -28,7 +29,29 @@ __green__ = 14
 __red__ = 13
 __blue__ = 6
 optionAutoclose = True
+optionLastSaved = 0
 scriptPath = os.path.dirname(__file__)
+# Determine if the file exists
+try:
+    # Initialize options
+    print "Loading options"
+    f = open(scriptPath + "/options.txt", "rt")
+    # file is pipe delimited for readibility
+    outputFile = f.read()
+    f.close()
+except IOError:
+    print "Options are not existent"
+try:
+    f = open(scriptPath + "/todo.txt", "rt")
+    todoList = f.read()
+    f.close()
+except IOError:
+    print "TODO list does not exist"
+# Break array into individual items
+tempArr = outputFile.split("|")
+# Set each variable
+optionAutoclose = tempArr[0]
+optionLastSaved = int(tempArr[1])
 
 phrases =  {
     "general_chooseJoint":"Choose joint",
@@ -57,12 +80,6 @@ phrases =  {
     "fkik_makeArmControl":"Create arm control at IK handle",
 }
 
-def initOptions():
-    f = open(scriptPath + "/options.txt")
-    # file is pipe delimited for readibility
-    #outputFile = f.read()
-    #print(f, "rt")
-    #f.close()
 
 def saveOptions(*args):
     f = open(scriptPath + "/options.txt", "wt")
@@ -1017,11 +1034,11 @@ def gui():
     pm.setParent("..")
     # Lay out the tab list
     pm.tabLayout('tabList', edit=1, tabLabel=[
-        (tab_Todo, "TODO"), 
         (tab_Quicks, "Quick Creates"), 
         (tab_FKIK, "FKIK"), 
         (tab_Cloth, "Cloth Deformers"),
         (tabHair, "Hair Deformers"),
+        (tab_Todo, "TODO"), 
         (tabOptions, "Options")
         ])
     pm.setParent("..")
