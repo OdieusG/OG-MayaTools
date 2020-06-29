@@ -2,6 +2,10 @@
 
 Connector mod
 
+import maya.cmds as cmds
+cmds.ikHandle(sj="joint2", ee="joint10", c="curve1")
+
+
 Components:
  Joint auto-connector
  Auto-pad'der
@@ -13,6 +17,7 @@ Components:
 '''
 
 import pymel.core as pm
+import maya.mel as mel
 import maya.cmds as cmds
 import sys
 import os.path
@@ -83,13 +88,11 @@ phrases =  {
 
 def saveOptions(*args):
     f = open(scriptPath + "/options.txt", "wt")
-
-    print 
-    #outputstring
     outputString = str(optionAutoclose)
     outputString = outputString + "|" +  str(int(time.time()))
     f.write(outputString)
     f.close()
+    print "Options saved"
 
 def toast(message):
     cmds.headsUpMessage(message)
@@ -128,6 +131,7 @@ def wnd_rowTODO():
     todoList = todoList + "+FK/IK Joint Automatic Creation Tool\n"
     todoList += "Flying hand syndrome with FK/IK\n"
     todoList = todoList + "Automatic SDK with FK/IK"
+    todoList = todoList + "Repair broken selection items"
     pm.text(label=todoList, align="left")
     pm.setParent("..")
 
@@ -991,6 +995,78 @@ def wnd_row_default():
 
     pm.setParent("..")
 
+def hairDeformerCompute(*args):
+    # get the joit chain
+    # get the coordinates of each joint center
+    # create a CUBIC curve based from the coordinates of the joint chain
+    print "incomplete"
+
+def wnd_hair_deformers():
+    global btn_hairDef1, btn_hairDef2
+    global sb_hairStatusBar
+    # hair deformer connector
+    btn_hairDef1 = pm.button(label="Create Joints", command=pm.Callback(hairDeformer_createJointchain))
+    btn_hairDef2 = pm.button(label="Make Curve On Newly Created Joints", enable=False, command=pm.Callback(hairDeformer_createCurve))
+    pm.text(label="Create a cubic curve on the joints that are newly created")
+    sb_hairStatusBar = pm.textField(text="Status Message Area", enable=False, width=windowWidth-50)
+
+
+def hairDeformer_createJointchain(*args):
+    # store into joint chain variable for processing later
+    jointChain = cmds.JointTool()
+    # Enable the next button
+    btn_hairDef2.setEnable(True)
+    sb_hairStatusBar.setText("Lay out your joints, and select the topmost joint that will have the hair deformation")
+
+def hairDeformer_makeDynamicCurve(*args):
+    #temporaryLink
+    print "Nothing here"
+
+
+def hairDeformer_createCurve(*args):
+    hfCount = 0
+    hfArr = []
+    degree = 3
+    # Get the selection, which should be the joint chain
+    jointChain = getSelected()
+    # assemble the joints to an array and get the coordinates of each
+    for i in jointChain:
+        jointTrans = pm.xform(i, q=True, t=True, worldSpace=True)
+        tempX = jointTrans[0]
+        tempY = jointTrans[1]
+        tempZ = jointTrans[2]
+        # Store the values in a base array
+        hfArr.append ((tempX, tempY, tempZ))
+        hfCount = hfCount + 1
+    # Number of knots
+    # = numPoints + degree (default of 3) - 1
+    knotCount = degree + len(hfArr) - 1
+    knots = []
+    i=0
+    while i < knotCount:
+        knots.append(i)
+        i = i + 1
+    # assemble the statement now
+    print "Output is"
+    print "pm.curve(p=" + str(hfArr) + ", k=" + str(knots) + ", d=" + str(degree) + ")"
+    hairCurve = pm.curve(p=hfArr, k=knots, d=degree)
+    print mel.eval("makeCurvesDynamic 2 { \"1\", \"0\", \"1\", \"1\", \"0\"};")
+    # toggle the point lock to just the base
+    # assumed the hair system is "hairSystem1"
+    # going off from default follicle design
+    pm.setAttr("follicleShape1.pointLock", 1)
+    # Take the established joint chain and unparent temporarily
+    parentJoints = cmds.listRelatives(jointChain, parent=True)
+    # separate the joint from the parent
+    baseJoint = jointChain[0]
+    endJoint = jointChain[len(jointChain) -1]
+    print "Base joint:" + baseJoint
+    print "End Joint:" + endJoint
+    # Create spline handle on these joints now
+    pm.ikHandle(sj=baseJoint, ee=endJoint, c=hairCurve)
+    print "Hair system connection complete"
+
+    
 def gui():
     global wnd_connector_window, windowKeepAlive
     global chk_keepAlive
@@ -1004,7 +1080,7 @@ def gui():
     pm.tabLayout('tabList')
     
     tab_Todo = pm.columnLayout('TODOList', h=200, w=200)
-    wnd_rowTODO();
+    wnd_rowTODO()
     pm.setParent("..")
 
     tab_Quicks = pm.columnLayout('QuickLinks', h=200, w=200)
@@ -1021,9 +1097,7 @@ def gui():
     pm.setParent("..")
 
     tabHair = pm.columnLayout('Hair', h=200, w=200)
-    pm.button(label="Create Joints")
-    pm.button(label="Make Curve On Newly Created Joints")
-    pm.text(label="In the works")
+    wnd_hair_deformers()
     pm.setParent("..")
 
     tabOptions = pm.columnLayout('Options')
