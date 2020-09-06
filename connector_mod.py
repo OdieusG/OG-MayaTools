@@ -39,19 +39,19 @@ scriptPath = os.path.dirname(__file__)
 # Determine if the file exists
 try:
     # Initialize options
-    print "Loading options"
+    print("Loading options")
     f = open(scriptPath + "/options.txt", "rt")
     # file is pipe delimited for readibility
     outputFile = f.read()
     f.close()
 except IOError:
-    print "Options are not existent"
+    print("Options are not existent")
 try:
     f = open(scriptPath + "/todo.txt", "rt")
     todoList = f.read()
     f.close()
 except IOError:
-    print "TODO list does not exist"
+    print("TODO list does not exist")
 # Break array into individual items
 tempArr = outputFile.split("|")
 # Set each variable
@@ -65,7 +65,7 @@ def saveOptions(*args):
     outputString = outputString + "|" +  str(int(time.time()))
     f.write(outputString)
     f.close()
-    print "Options saved"
+    print=("Options saved")
 
 def toast(message):
     cmds.headsUpMessage(message)
@@ -280,7 +280,7 @@ def create_cube(shapeTitle, newScale=1):
         ],
         k=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], d=1)
     newCurve =pm.xform(shapeTitle, s=[float(newScale), float(newScale), float(newScale)])
-    print "Rescaling " + str(newCurve)
+    print("Rescaling " + str(newCurve))
     return newCurve
 
 def create_COG(shapeTitle):
