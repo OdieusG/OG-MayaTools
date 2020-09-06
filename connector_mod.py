@@ -585,7 +585,7 @@ def createShape(*args):
         shapeSuffix = "icon"
     shapeName = shapeName + "_" + shapeSuffix
     #determine which pulldown item is chosen
-    #if build to appropriate functino
+    #if build to appropriate function
     if shapeObject == "Circle":
         newShape = create_circle(shapeName)
     elif shapeObject == "Sphere":
@@ -607,6 +607,16 @@ def createShape(*args):
     else:
         print("Shape unidentified - " + str(shapeName))
         return
+    # Determine where the control will be placed
+    if opt_placementOption != "Origin":
+        # Means it will be on the currently selected object
+        currentlySelected = getSelected()
+        # Get the translate of the selected object
+        currentTranslate = cmds.xform(currentlySelected[0], q=True, t=True)
+        # Get the rotate of the object
+        currentRotate = cmds.xform(currentlySelected[0], q=True, ro=True)
+        # Move to translate and rotate
+        cmds.xform(newShape, t=currentTranslate, ro=currentRotate)
     closeWindow()
 
 def wnd_rowFKIK():
@@ -857,9 +867,6 @@ def fkik_generateStuff(*args):
             pm.parentConstraint(iconName, handBind)
             toast("Complete")
 
-
-
-
 def snapToArray(objectName, snapArray):
     print "Snapping " + objectName + " to " 
     print str(snapArray)
@@ -983,7 +990,6 @@ def wnd_hair_deformers():
     pm.text(label="Create a cubic curve on the joints that are newly created")
     sb_hairStatusBar = pm.textField(text="Status Message Area", enable=False, width=windowWidth-50)
 
-
 def hairDeformer_createJointchain(*args):
     # store into joint chain variable for processing later
     jointChain = cmds.JointTool()
@@ -994,7 +1000,6 @@ def hairDeformer_createJointchain(*args):
 def hairDeformer_makeDynamicCurve(*args):
     #temporaryLink
     print "Nothing here"
-
 
 def hairDeformer_createCurve(*args):
     hfCount = 0
@@ -1038,7 +1043,6 @@ def hairDeformer_createCurve(*args):
     # Create spline handle on these joints now
     pm.ikHandle(sj=baseJoint, ee=endJoint, c=hairCurve)
     print "Hair system connection complete"
-
     
 def gui():
     global wnd_connector_window, windowKeepAlive
