@@ -105,6 +105,7 @@ def wnd_rowTODO():
     todoList += "Flying hand syndrome with FK/IK\n"
     todoList = todoList + "Automatic SDK with FK/IK"
     todoList = todoList + "Repair broken selection items"
+    todoList = todoList + "Create buttons to change the override colors on finalization"
     pm.text(label=todoList, align="left")
     pm.setParent("..")
 
