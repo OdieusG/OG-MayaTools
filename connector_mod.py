@@ -39,24 +39,51 @@ scriptPath = os.path.dirname(__file__)
 # Determine if the file exists
 try:
     # Initialize options
-    print("Loading options")
+    print "Loading options"
     f = open(scriptPath + "/options.txt", "rt")
     # file is pipe delimited for readibility
     outputFile = f.read()
     f.close()
 except IOError:
-    print("Options are not existent")
+    print "Options are not existent"
 try:
     f = open(scriptPath + "/todo.txt", "rt")
     todoList = f.read()
     f.close()
 except IOError:
-    print("TODO list does not exist")
+    print "TODO list does not exist"
 # Break array into individual items
 tempArr = outputFile.split("|")
 # Set each variable
 optionAutoclose = tempArr[0]
 optionLastSaved = int(tempArr[1])
+
+phrases =  {
+    "general_chooseJoint":"Choose joint",
+    "pad_chooseObjectText":"Choose an object to pad",
+    "pad_chooseObjectBtn":"Choose Item",
+    "pad_append":"Automatically append \"pad\" to end?",
+    "pad_button":"Pad this",
+    "shapes_defaultShapeText":"shape",
+    "shapes_defaultControlText":"icon",
+    "shapes_chooseShape":"Choose a shape",
+    "shapes_shapeName":"Enter a name.\nLeave blank for default shape name.",
+    "shapes_shapeSuffix":"Insert a suffix.\nLeave blank for default\n\"icon\" to be added",
+    "shapes_placedOn":"Shape is placed on:",
+    "shapes_button":"Create Shape",
+    "fkik_selectRootText":"Select the root joint",
+    "fkik_selectEndText":"Select the end joint\n(for IK creation)",
+    "fkik_selectRootButton":"Select root",
+    "fkik_selectEndButton":"Select end",
+    "fkik_selectHandButton":"Select hand Joint",
+    "fkik_selectHandControlLocation":"Select secondary\nhand position (waste)",
+    "fkik_createControl":"Create control on hand?",
+    "fkik_createControlsText":"Create controls on respective joints?",
+    "fkik_createHierarchyText":"Create controls in hierarchy?",
+    "fkik_connectControlsText":"Connect controls on respective joints?",
+    "main_autocloseWindow":"Automatically close window after operation",
+    "fkik_makeArmControl":"Create arm control at IK handle",
+}
 
 
 def saveOptions(*args):
@@ -65,7 +92,7 @@ def saveOptions(*args):
     outputString = outputString + "|" +  str(int(time.time()))
     f.write(outputString)
     f.close()
-    print=("Options saved")
+    print "Options saved"
 
 def toast(message):
     cmds.headsUpMessage(message)
@@ -115,19 +142,19 @@ def wnd_rowPad():
     pm.frameLayout(collapsable=True, label="Pad Object", width=500)
 
     pm.rowLayout(numberOfColumns=3, columnWidth=[(1, 150), (2, 200), (3, 100)])
-    pm.text(label="Choose an object to pad")
-    txt_jointField = pm.textField(placeholderText="Choose joint", editable=False)
-    pm.button(label="Choose Item", command=pm.Callback(selectItem))
+    pm.text(label=phrases['pad_chooseObjectText'])
+    txt_jointField = pm.textField(placeholderText=phrases['general_chooseJoint'], editable=False)
+    pm.button(label=phrases['pad_chooseObjectBtn'], command=pm.Callback(selectItem))
     pm.setParent("..")
 
     pm.rowLayout(numberOfColumns=2, columnWidth=[(1,350)])
-    pm.text("Automatically append \"pad\" to end?")
+    pm.text(phrases['pad_append'])
     chk_appendPad = pm.checkBox("appendPad", value=True, label="")
     pm.setParent("..")
 
     pm.rowLayout(numberOfColumns=3)
     pm.text(width=150, label="")
-    pm.button(label="Pad this", command=pm.Callback(padObject))
+    pm.button(label=phrases['pad_append'], command=pm.Callback(padObject))
     pm.text(width=150, label="")
     pm.setParent("..")
 
@@ -159,7 +186,7 @@ def wnd_rowShapes():
     
     pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
         width=450, columnWidth=([1, 200], [2, 250]))
-    pm.text(label="Choose a shape")
+    pm.text(label=phrases['shapes_chooseShape'])
     opt_shapeOptions = pm.optionMenu(width=100)
     pm.menuItem(label="Circle")
     pm.menuItem(label="Sphere")
@@ -174,19 +201,21 @@ def wnd_rowShapes():
     
     pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
         width=450, columnWidth=([1, 200], [2, 250]))
-    pm.text(label="Enter a name.\nLeave blank for default shape name.")
-    txt_shapeName = pm.textField(placeholderText="shape")
+    pm.text(label=phrases['shapes_shapeName'])
+    txt_shapeName = pm.textField(
+        placeholderText=phrases['shapes_defaultShapeText'])
     pm.setParent("..")
 
     pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
         width=450, columnWidth=([1, 200], [2, 250]))
-    pm.text(label="Insert a suffix.\nLeave blank for default\n\"icon\" to be added")
-    txt_shapeSuffix = pm.textField(placeholderText="icon")
+    pm.text(label=phrases['shapes_shapeSuffix'])
+    txt_shapeSuffix = pm.textField(
+        placeholderText=phrases['shapes_defaultControlText'])
     pm.setParent("..")
 
     pm.rowLayout(numberOfColumns=2, columnAlign=([1, "left"], [2, "right"]),
         width=450, columnWidth=([1, 200], [2, 250]))
-    pm.text(label="Shape is placed on:")
+    pm.text(label=phrases['shapes_placedOn'])
     opt_placementOption = pm.optionMenu(width=150)
     pm.menuItem(label="Origin")
     pm.menuItem(label="Currently Selected Object")
@@ -194,7 +223,7 @@ def wnd_rowShapes():
 
     pm.rowLayout(numberOfColumns=3, columnWidth=([1,150], [2, 150]))
     pm.text(label="")
-    pm.button(label="Create Shape", command=pm.Callback(createShape,
+    pm.button(label=phrases['shapes_button'], command=pm.Callback(createShape,
         opt_shapeOptions, txt_shapeName, txt_shapeSuffix,
         opt_placementOption))
     pm.text(label="")
@@ -280,7 +309,7 @@ def create_cube(shapeTitle, newScale=1):
         ],
         k=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], d=1)
     newCurve =pm.xform(shapeTitle, s=[float(newScale), float(newScale), float(newScale)])
-    print("Rescaling " + str(newCurve))
+    print "Rescaling " + str(newCurve)
     return newCurve
 
 def create_COG(shapeTitle):
@@ -619,25 +648,25 @@ def wnd_rowFKIK():
 
     pm.rowLayout(numberOfColumns=3, width=500,
         columnWidth=([1, 200], [2, 150], [3, 150]))
-    pm.text(label="Select the root joint")
+    pm.text(label=phrases['fkik_selectRootText'])
     txt_rootJoint = pm.textField(
-        placeholderText="Choose joint", editable=False)
-    pm.button(label="Select root"],
+        placeholderText=phrases['general_chooseJoint'], editable=False)
+    pm.button(label=phrases['fkik_selectRootButton'],
         command=pm.Callback(fkikSelectRoot), width=100)
     pm.setParent("..")
 
     pm.rowLayout(numberOfColumns=3, width=500, columnWidth=([1, 200],[2, 150],
         [3, 150]))
-    pm.text(label="Select the end joint\n(for IK creation)")
+    pm.text(label=phrases['fkik_selectEndText'])
     txt_endJoint = pm.textField(
-        placeholderText="Choose joint", editable=False)
-    pm.button(label="Select end",
+        placeholderText=phrases['general_chooseJoint'], editable=False)
+    pm.button(label=phrases['fkik_selectEndButton'],
         command=pm.Callback(fkikSelectEnd), width=100)
     pm.setParent("..")
 
     pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350],
         [2, 150]))
-    pm.text(label="Create controls on respective joints?")
+    pm.text(label=phrases['fkik_createControlsText'])
     chk_control_create = pm.checkBox(label="", value=True,
         onCommand=pm.Callback(toggleJointCreation, True),
         offCommand=pm.Callback(toggleJointCreation, False))
@@ -652,20 +681,20 @@ def wnd_rowFKIK():
     
     pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350],
         [2, 150]))
-    pm.text(label="Connect controls on respective joints?")
+    pm.text(label=phrases['fkik_connectControlsText'])
     chk_control_connect = pm.checkBox(label="", value=True)
     pm.setParent("..")
 
     pm.rowLayout(numberOfColumns=2, width=450, columnWidth=([1, 350],
         [2, 150]))
-    pm.text(label="Create arm control at IK handle")
+    pm.text(label=phrases['fkik_makeArmControl'])
     chk_arm_control = pm.checkBox(label="", value=True)
     pm.setParent("..")
 
     fkik_innerFrame = pm.frameLayout(label="Hand Connection", collapsable=True) # Embedded frame
 
     pm.rowLayout(numberOfColumns=2, columnWidth=([1, 350], [2, 150]))
-    pm.text(label="Create control on hand?")
+    pm.text(label=phrases['fkik_createControl'])
     chk_createHandControl = pm.checkBox(label="", value=True,
         changeCommand=pm.Callback(toggleHandConnection))
     pm.setParent("..")
@@ -674,8 +703,8 @@ def wnd_rowFKIK():
         [3, 150]))
     pm.text(label="Hand Joint:")
     txt_handJoint = pm.textField(
-        placeholderText="Choose joint", editable=False)
-    btn_selectHandControl = pm.button(label="Select hand Joint",
+        placeholderText=phrases['general_chooseJoint'], editable=False)
+    btn_selectHandControl = pm.button(label=phrases['fkik_selectHandButton'],
         command=pm.Callback(fkikSelectHand))
     pm.setParent("..")
 
@@ -683,8 +712,8 @@ def wnd_rowFKIK():
         [3, 150]))
     pm.text(label="Hand waste:")
     txt_handDrop = pm.textField(
-        placeholderText="Choose joint", editable=False)
-    btn_selectWasteControl = pm.button(label="Select secondary\nhand position (waste)",
+        placeholderText=phrases['general_chooseJoint'], editable=False)
+    btn_selectWasteControl = pm.button(label=phrases['fkik_selectHandControlLocation'],
         command=pm.Callback(fkikSelectHandIconPoint))
     pm.setParent("..")
 
@@ -937,7 +966,7 @@ def wnd_jointOrient():
     pm.rowLayout(numberOfColumns=3, columnWidth=([1, 200], [2, 150],
         [3, 150]))
     pm.text(label="Select Joint")
-    txt_orientJointBase = pm.textField(placeholderText="Choose joint", editable=False)
+    txt_orientJointBase = pm.textField(placeholderText=phrases['general_chooseJoint'], editable=False)
     pm.button(label="Select Joint", command=pm.Callback(orient_selectJoint))
     pm.setParent("..")
 
