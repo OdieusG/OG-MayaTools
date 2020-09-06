@@ -58,32 +58,32 @@ tempArr = outputFile.split("|")
 optionAutoclose = tempArr[0]
 optionLastSaved = int(tempArr[1])
 
-phrases =  {
-    "general_chooseJoint":"Choose joint",
-    "pad_chooseObjectText":"Choose an object to pad",
-    "pad_chooseObjectBtn":"Choose Item",
-    "pad_append":"Automatically append \"pad\" to end?",
-    "pad_button":"Pad this",
-    "shapes_defaultShapeText":"shape",
-    "shapes_defaultControlText":"icon",
-    "shapes_chooseShape":"Choose a shape",
-    "shapes_shapeName":"Enter a name.\nLeave blank for default shape name.",
-    "shapes_shapeSuffix":"Insert a suffix.\nLeave blank for default\n\"icon\" to be added",
-    "shapes_placedOn":"Shape is placed on:",
-    "shapes_button":"Create Shape",
-    "fkik_selectRootText":"Select the root joint",
-    "fkik_selectEndText":"Select the end joint\n(for IK creation)",
-    "fkik_selectRootButton":"Select root",
-    "fkik_selectEndButton":"Select end",
-    "fkik_selectHandButton":"Select hand Joint",
-    "fkik_selectHandControlLocation":"Select secondary\nhand position (waste)",
-    "fkik_createControl":"Create control on hand?",
-    "fkik_createControlsText":"Create controls on respective joints?",
-    "fkik_createHierarchyText":"Create controls in hierarchy?",
-    "fkik_connectControlsText":"Connect controls on respective joints?",
-    "main_autocloseWindow":"Automatically close window after operation",
-    "fkik_makeArmControl":"Create arm control at IK handle",
-}
+# phrases =  {
+#     "general_chooseJoint":"Choose joint",
+#     "pad_chooseObjectText":"Choose an object to pad",
+#     "pad_chooseObjectBtn":"Choose Item",
+#     "pad_append":"Automatically append \"pad\" to end?",
+#     "pad_button":"Pad this",
+#     "shapes_defaultShapeText":"shape",
+#     "shapes_defaultControlText":"icon",
+#     "shapes_chooseShape":"Choose a shape",
+#     "shapes_shapeName":"Enter a name.\nLeave blank for default shape name.",
+#     "shapes_shapeSuffix":"Insert a suffix.\nLeave blank for default\n\"icon\" to be added",
+#     "shapes_placedOn":"Shape is placed on:",
+#     "shapes_button":"Create Shape",
+#     "fkik_selectRootText":"Select the root joint",
+#     "fkik_selectEndText":"Select the end joint\n(for IK creation)",
+#     "fkik_selectRootButton":"Select root",
+#     "fkik_selectEndButton":"Select end",
+#     "fkik_selectHandButton":"Select hand Joint",
+#     "fkik_selectHandControlLocation":"Select secondary\nhand position (waste)",
+#     "fkik_createControl":"Create control on hand?",
+#     "fkik_createControlsText":"Create controls on respective joints?",
+#     "fkik_createHierarchyText":"Create controls in hierarchy?",
+#     "fkik_connectControlsText":"Connect controls on respective joints?",
+#     "main_autocloseWindow":"Automatically close window after operation",
+#     "fkik_makeArmControl":"Create arm control at IK handle",
+# }
 
 
 def saveOptions(*args):
@@ -142,19 +142,19 @@ def wnd_rowPad():
     pm.frameLayout(collapsable=True, label="Pad Object", width=500)
 
     pm.rowLayout(numberOfColumns=3, columnWidth=[(1, 150), (2, 200), (3, 100)])
-    pm.text(label=phrases['pad_chooseObjectText'])
-    txt_jointField = pm.textField(placeholderText=phrases['general_chooseJoint'], editable=False)
-    pm.button(label=phrases['pad_chooseObjectBtn'], command=pm.Callback(selectItem))
+    pm.text(label="Choose an object to pad")
+    txt_jointField = pm.textField(placeholderText="Choose joint", editable=False)
+    pm.button(label="Choose Item", command=pm.Callback(selectItem))
     pm.setParent("..")
 
     pm.rowLayout(numberOfColumns=2, columnWidth=[(1,350)])
-    pm.text(phrases['pad_append'])
+    pm.text("Automatically append \"pad\" to end?")
     chk_appendPad = pm.checkBox("appendPad", value=True, label="")
     pm.setParent("..")
 
     pm.rowLayout(numberOfColumns=3)
     pm.text(width=150, label="")
-    pm.button(label=phrases['pad_append'], command=pm.Callback(padObject))
+    pm.button(label="Pad this", command=pm.Callback(padObject))
     pm.text(width=150, label="")
     pm.setParent("..")
 
@@ -650,7 +650,7 @@ def wnd_rowFKIK():
         columnWidth=([1, 200], [2, 150], [3, 150]))
     pm.text(label=phrases['fkik_selectRootText'])
     txt_rootJoint = pm.textField(
-        placeholderText=phrases['general_chooseJoint'], editable=False)
+        placeholderText="Choose joint", editable=False)
     pm.button(label=phrases['fkik_selectRootButton'],
         command=pm.Callback(fkikSelectRoot), width=100)
     pm.setParent("..")
@@ -659,7 +659,7 @@ def wnd_rowFKIK():
         [3, 150]))
     pm.text(label=phrases['fkik_selectEndText'])
     txt_endJoint = pm.textField(
-        placeholderText=phrases['general_chooseJoint'], editable=False)
+        placeholderText="Choose joint", editable=False)
     pm.button(label=phrases['fkik_selectEndButton'],
         command=pm.Callback(fkikSelectEnd), width=100)
     pm.setParent("..")
@@ -703,7 +703,7 @@ def wnd_rowFKIK():
         [3, 150]))
     pm.text(label="Hand Joint:")
     txt_handJoint = pm.textField(
-        placeholderText=phrases['general_chooseJoint'], editable=False)
+        placeholderText="Choose joint", editable=False)
     btn_selectHandControl = pm.button(label=phrases['fkik_selectHandButton'],
         command=pm.Callback(fkikSelectHand))
     pm.setParent("..")
@@ -712,7 +712,7 @@ def wnd_rowFKIK():
         [3, 150]))
     pm.text(label="Hand waste:")
     txt_handDrop = pm.textField(
-        placeholderText=phrases['general_chooseJoint'], editable=False)
+        placeholderText="Choose joint", editable=False)
     btn_selectWasteControl = pm.button(label=phrases['fkik_selectHandControlLocation'],
         command=pm.Callback(fkikSelectHandIconPoint))
     pm.setParent("..")
@@ -966,7 +966,7 @@ def wnd_jointOrient():
     pm.rowLayout(numberOfColumns=3, columnWidth=([1, 200], [2, 150],
         [3, 150]))
     pm.text(label="Select Joint")
-    txt_orientJointBase = pm.textField(placeholderText=phrases['general_chooseJoint'], editable=False)
+    txt_orientJointBase = pm.textField(placeholderText="Choose joint", editable=False)
     pm.button(label="Select Joint", command=pm.Callback(orient_selectJoint))
     pm.setParent("..")
 
