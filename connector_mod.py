@@ -103,9 +103,9 @@ def wnd_rowTODO():
     todoList = todoList + "+Joint orient tool\n"
     todoList = todoList + "+FK/IK Joint Automatic Creation Tool\n"
     todoList += "Flying hand syndrome with FK/IK\n"
-    todoList = todoList + "Automatic SDK with FK/IK"
-    todoList = todoList + "Repair broken selection items"
-    todoList = todoList + "Create buttons to change the override colors on finalization"
+    todoList = todoList + "Automatic SDK with FK/IK\n"
+    todoList = todoList + "Repair broken selection items\n"
+    todoList = todoList + "Create buttons to change the override colors on finalization\n"
     pm.text(label=todoList, align="left")
     pm.setParent("..")
 
