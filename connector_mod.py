@@ -579,6 +579,7 @@ def createShape(*args):
     shapeName = args[1].getText()
     shapeSuffix = args[2].getText()
     shapeLocation = args[3].getValue()
+    currently_selected_item = getSelected()
     if shapeName == "":
         shapeName = "shape"
     if shapeSuffix == "":
@@ -608,15 +609,18 @@ def createShape(*args):
         print("Shape unidentified - " + str(shapeName))
         return
     # Determine where the control will be placed
-    if opt_placementOption != "Origin":
+    if shapeLocation != "Origin":
         # Means it will be on the currently selected object
-        currentlySelected = getSelected()
+        print("Current selection is {0}".format(currently_selected_item[0]))
         # Get the translate of the selected object
-        currentTranslate = cmds.xform(currentlySelected[0], q=True, t=True)
+        currentTranslate = cmds.xform(currently_selected_item[0], q=True, t=True)
+        print("Current translate {0}".format(currentTranslate))
         # Get the rotate of the object
-        currentRotate = cmds.xform(currentlySelected[0], q=True, ro=True)
+        currentRotate = cmds.xform(currently_selected_item[0], q=True, ro=True)
         # Move to translate and rotate
         cmds.xform(newShape, t=currentTranslate, ro=currentRotate)
+    else:
+        print("Sending to origin")
     closeWindow()
 
 def wnd_rowFKIK():
