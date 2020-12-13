@@ -288,10 +288,10 @@ def create_cube(shapeTitle, newScale=1):
 
 def create_COG(shapeTitle):
     # Make a base circle (16 segments), 2 mm wide
-    cog = pm.circle(name=shapeTitle, c=[0,0,0], nr=[0,1,0], sw=360, r=2, d=3, tol=.01, ch=False, s=16)[0]
+    cog = pm.circle(name=shapeTitle, c=[0,0,0], nr=[0,1,0], sw=360, r=1, d=3, tol=.01, ch=False, s=16)[0]
     # Scale in alternating CVs
     pm.xform(cog.cv[0::2], s=(.5, .5, .5))
-    pm.xform(cog.cv[9], r=True, t=(0, 0, .75))
+    pm.xform(cog.cv[9], r=True, t=(0, 0, .5))
 
 
 '''
