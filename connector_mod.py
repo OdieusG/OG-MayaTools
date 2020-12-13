@@ -287,6 +287,11 @@ def create_cube(shapeTitle, newScale=1):
     return newCurve
 
 def create_COG(shapeTitle):
+    # Make a base circle (16 segments), 2 mm wide
+    pm.circle(c=[0,0,0], nr=[0,1,0], sw=360, r=2, d=3, ut=0, tol=.01, ch=1, s=16)
+    # Scale in alternating CVs
+
+'''
         return pm.curve(name=shapeTitle, p=[
             (-1.19209e-07, 0, 2), 
             (-0.382683, 0, 0.923879), 
@@ -310,6 +315,7 @@ def create_COG(shapeTitle):
             0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 
             13, 14, 14, 14
             ], d=3)
+            '''
 
 def create_sphere(shapeTitle):
         return pm.curve(name=shapeTitle, p=[
