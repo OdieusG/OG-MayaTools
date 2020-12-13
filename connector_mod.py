@@ -21,8 +21,9 @@ import maya.mel as mel
 import maya.cmds as cmds
 import sys
 import os.path
-from os import path
+import os
 import time
+from os import path
 
 backColor_gray = [.5, .5, .5]
 windowWidth = 520
@@ -35,6 +36,9 @@ __red__ = 13
 __blue__ = 6
 optionAutoclose = True
 optionLastSaved = 0
+
+''' OBSOLETE
+
 scriptPath = os.path.dirname(__file__)
 # Determine if the file exists
 try:
@@ -66,6 +70,7 @@ def saveOptions(*args):
     f.write(outputString)
     f.close()
     print("Options saved")
+'''
 
 def toast(message):
     cmds.headsUpMessage(message)
@@ -626,6 +631,9 @@ def createShape(*args):
     else:
         print("Shape unidentified - " + str(shapeName))
         return
+
+    # Separate function from here down
+    
     # Determine where the control will be placed
     if shapeLocation != "Origin":
         # Means it will be on the currently selected object
