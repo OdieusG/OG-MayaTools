@@ -106,6 +106,14 @@ def wnd_rowTODO():
     todoList = todoList + "Automatic SDK with FK/IK\n"
     todoList = todoList + "Repair broken selection items\n"
     todoList = todoList + "Create buttons to change the override colors on finalization\n"
+    todoList = todoList + "Attribute unlocker\n"
+    todoList = todoList + "Revamp shapes to CV mod when applicable\n"
+    todoList = todoList + "RFL Creation\n"
+    todoList = todoList + "Facial attribute automation\n"
+    todoList = todoList + "Attribute rearrangement?\n"
+    todoList = todoList + "\n"
+    todoList = todoList + "\n"
+    todoList = todoList + "\n"
     pm.text(label=todoList, align="left")
     pm.setParent("..")
 
