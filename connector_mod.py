@@ -287,8 +287,9 @@ def create_cube(shapeTitle, newScale=1):
     return newCurve
 
 def create_COG(shapeTitle):
+    print("Make COG")
     # Make a base circle (16 segments), 2 mm wide
-    pm.circle(c=[0,0,0], nr=[0,1,0], sw=360, r=2, d=3, ut=0, tol=.01, ch=1, s=16)
+    # pm.circle(c=[0,0,0], nr=[0,1,0], sw=360, r=2, d=3, ut=0, tol=.01, ch=1, s=16)
     # Scale in alternating CVs
 
 '''
