@@ -287,6 +287,8 @@ def create_cube(shapeTitle, newScale=1):
     return newCurve
 
 def create_COG(shapeTitle):
+    print("create COG")
+    '''
         return pm.curve(name=shapeTitle, p=[
             (-1.19209e-07, 0, 2), 
             (-0.382683, 0, 0.923879), 
@@ -309,7 +311,7 @@ def create_COG(shapeTitle):
             k=[
             0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 
             13, 14, 14, 14
-            ], d=3)
+            ], d=3)'''
 
 def create_sphere(shapeTitle):
         return pm.curve(name=shapeTitle, p=[
