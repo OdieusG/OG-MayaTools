@@ -62,8 +62,11 @@ tempArr = outputFile.split("|")
 optionAutoclose = tempArr[0]
 optionLastSaved = int(tempArr[1])
 
-
+'''
 def saveOptions(*args):
+    # Commented out for reasons
+    print("Funciton disabled")
+    '''
     f = open(scriptPath + "/options.txt", "wt")
     outputString = str(optionAutoclose)
     outputString = outputString + "|" +  str(int(time.time()))
